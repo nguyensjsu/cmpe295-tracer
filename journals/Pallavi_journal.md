@@ -99,7 +99,13 @@ Application frontend on http://localhost:8080
 "jaeger-agent.host-port=jaeger:6831" tells the HotROD application to configure the tracer to send data to UDP port 6831 on hostname jaeger
 ```
 
+Jaeger has a distinct feature of **contextualized logs**, meaning they are captured not only in the context of a specific request, but also in the context of a specific span within the trace for that request.
 
+The Jaeger UI shows the time sequence diagrams of the spans over the 4 microservices. These spans also show the contextualized logs, request details, latency of each span.
 
+If there are many requests, the UI also shows the bottleneck application, for ex in this use case the mysql query.
 
+The tracing metadata like request ids are propagated not with the request params but by making the data transparently available using Open Tracing instrumentation.
+
+Agent-based instrumentation 
 
