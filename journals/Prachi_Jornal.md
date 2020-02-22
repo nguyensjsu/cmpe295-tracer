@@ -44,11 +44,20 @@ Timestamp , Method , URL , Src_IP , Src_Port , Dest_IP , Dest_Port , Response_Co
 
 # Industry Tools
 
-## OpenTracing
+## OpenTracing (Whitebox Instrumentation)
+- Traces in OpenTracing are defined implicitly by their Spans. In particular, a Trace can be thought of as a directed acyclic graph (DAG) of Spans, where the edges between Spans are called References.
+- It uses Jaeger tracing backend and hence requires a jaeger docker image running.
 - According to the OpenTracing specification, a span always contains a set of basic information: the name of the operation, the name of the component providing the operation, the start timestamp and duration (or, alternatively, the finish timestamp), the role of the span in the request and a set of user-defined annotations called tags.
+- https://github.com/opentracing
 
 ## JCallGraph
 - A tracing and analytics tool to visualize the microservice invocation graph for massive scale microservice platform in enterprise datacenter.
 -JCallGraph can accurately capture the real-time invocation relationship among tens of thousands of microservices in millions of containers, one of the largest Kubernetes clusters in real production in the world, while achieving minimal overhead without any significant performance impact on real-production applications, and zero-intrusion to the code of applications.
 JCall-Graph also leverages sampling to dramatically reduce the overhead of the system. Efficient log transfer layer and in-memory storage layer are integrated to ensure real time analysis and visualization. JCallGraph provides better understanding of the system such as analyzing complex execution paths across microservices. Other functionalities include timing and bottleneck analysis, analyzing statistics of calling information or the entrance points, and analyzing the dependencies within an invocation chain.
+
+## CloudProber
+- Cloudprober is a black-box monitoring software. It employs an “active” monitoring model. It runs probes against (or on) the components of your systems to verify that they are working as expected. Example probes include a probe that verifies that your frontend VMs can reach your backend VMs and a probe that verifies the connectivity between Cloud VMs and on-premise systems.
+- Integrated with Prometheus and Grafana to display results.
+- Built-in implementations for the most common probe types: PING, HTTP, UDP, DNS.
+- https://github.com/google/cloudprober
 
