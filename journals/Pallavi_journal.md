@@ -107,5 +107,5 @@ If there are many requests, the UI also shows the bottleneck application, for ex
 
 The tracing metadata like request ids are propagated not with the request params but by making the data transparently available using Open Tracing instrumentation.
 
-Agent-based instrumentation 
+**Agent-based instrumentation** - inject trace points automatically, without changes to the application itself.
 
