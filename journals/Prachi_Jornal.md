@@ -26,6 +26,22 @@ understand interactions among microservices, pinpoint root-cause of problems.
 - Four main components are used: (1) Trace Layer, tracing the invocation relationship in the middlewares (e.g., JSF, JMQ, JIMDB etc.); (2) Transfer Layer, transferring the traced invocation information to storages; (3) Storage Layer, storing the realtime data in JIMDB and offline analytic data in Elasticsearch1 (4) Visualization and Analytics Layer, visualizing and deeply analyzing the microservices and their invocation relationship.
 - Use cases: Microservice Visualization, Root Cause Analysis, Invocation Dependency Analysis.
 
+## 2019- Microservices Monitoring with Event Logs and Black Box Execution Tracing
+- This paper proposes a novel approach to accompany microservices logs with black box tracing to help practitioners in making informed decisions for troubleshooting.
+- The approach is based on the passive tracing of request-response messages of the REpresentational State Transfer (REST) communication model.
+- Two case studies have been presented: Clearwater IP Multimedia Subsystem (IMS) setup consisting of Docker microservices and a Kubernetes orchestrator deployment hosting tens of microservices.
+- It relies on Passive tracing, i.e., the interception of packets passing through a network, requires no changes to the target software; as such, it is application-transparent. Format of the trace is as follows:
+Timestamp , Method , URL , Src_IP , Src_Port , Dest_IP , Dest_Port , Response_Code , Completion_Time , Info
+- An average reduction of around 59% in log size, at 3.3% higher performance overhead when compared to the collection of buitlin logs
+
+## 2018- An Approach to Extract the Architecture of Microservice-Based Software Systems
+- The main characteristics of the approach are the collection of static and dynamic information from services, the aggregation of collected runtime information, and the combination of static and runtime information.
+- A configurable aggregation function condenses the captured runtime information to a single dimension, enabling analysis of the evolution of the architecture over a longer period of time. The static service information, like service and API descriptions, is combined with infrastructure-related and runtime information.
+- The dashboard is used to create several visualization components that offer detailed information on individual services and on the overall system architecture, which is useful for documentation purposes. The defined visualizations are also useful for identifying design drawbacks, such as strong coupling between services, or other potential areas of architectural improvement.
+- This implementation is only limited to RESTful services.
+
+
+
 # Industry Tools
 
 ## OpenTracing
