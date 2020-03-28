@@ -128,7 +128,7 @@ The tracing metadata like request ids are propagated not with the request params
 
 Version 1 - 
 
-![](/home/pallavi/Desktop/295/cmpe295-tracer/journals/images/initial mindmap.png)
+![](images/initial mindmap.png)
 
 More to Investigate ?
 
