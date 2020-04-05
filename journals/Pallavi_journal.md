@@ -173,3 +173,86 @@ Reference - https://openliberty.io/guides/microprofile-opentracing.html
 * MicroProfile OpenTracing enables distributed tracing in microservices without adding any explicit distributed tracing code to the application. Note that the MicroProfile OpenTracing specification does not address the problem of defining, implementing, or configuring the underlying distributed tracing system. Rather, the specification makes it easy to instrument services with distributed tracing given an existing distributed tracing system.
 * This article uses Zipkin as your distributed tracing system. 
 * Thoughts - JVM also needs to accept HTTP requests and to read this header information, we might require BPF/SECCOMP in kernel level again? HTTP call hits a microservice on a container running Java application. First request came to the container and due to service running on a port, request is handled by the service on this port, which is the Java code run for this microservice. Where to add instrumentation in JVM? While code begun execution? Needs more investigation.
+
+
+
+### Istio Envoy Based Tracing - How to collect Envoy trace logs?
+
+References - 
+
+https://istio.io/docs/concepts/observability/
+
+https://istio.io/docs/ops/deployment/architecture/#design-goals
+
+https://istio.io/docs/concepts/observability/
+
+https://istio.io/docs/tasks/observability/logs/access-log/ -- Major to follow
+
+* Istio has 2 planes - data plane, content plane
+
+* Data plane is the whole traffic which involves the envoys of all microservices 
+
+* Control plane has the components needed to manage istio
+
+* In previous versions, telemetry was a part of control plane, but this has been deprecated and moved to the data plane.
+
+  ![](https://github.com/nguyensjsu/cmpe295-tracer/blob/master/journals/images/istio%20architecture.png)
+
+* Istio generates the following types of telemetry in order to provide overall service mesh observability:
+
+  - [**Metrics**](https://istio.io/docs/concepts/observability/#metrics). Istio generates a set of service metrics based on the four “golden signals” of monitoring (latency, traffic, errors, and saturation). Istio also provides detailed metrics for the [mesh control plane](https://istio.io/docs/ops/deployment/architecture/). A default set of mesh monitoring dashboards built on top of these metrics is also provided.
+  - [**Distributed Traces**](https://istio.io/docs/concepts/observability/#distributed-traces). Istio generates distributed trace spans for each service, providing operators with a detailed understanding of call flows and service dependencies within a mesh.
+  - [**Access Logs**](https://istio.io/docs/concepts/observability/#access-logs). As traffic flows into a service within a mesh, Istio can generate a full record of each request, including source and destination metadata. This information enables operators to audit service behavior down to the individual [workload instance](https://istio.io/docs/reference/glossary/#workload-instance) level.
+
+* We are concerned with the proxy level metrics and access logs for telemetry
+
+* Access logs looks like:
+
+  ```
+  {
+    "level": "info",
+    "time": "2019-06-11T20:57:35.424310Z",
+    "instance": "accesslog.instance.istio-control",
+    "connection_security_policy": "mutual_tls",
+    "destinationApp": "productpage",
+    "destinationIp": "10.44.2.15",
+    "destinationName": "productpage-v1-6db7564db8-pvsnd",
+    "destinationNamespace": "default",
+    "destinationOwner": "kubernetes://apis/apps/v1/namespaces/default/deployments/productpage-v1",
+    "destinationPrincipal": "cluster.local/ns/default/sa/default",
+    "destinationServiceHost": "productpage.default.svc.cluster.local",
+    "destinationWorkload": "productpage-v1",
+    "httpAuthority": "35.202.6.119",
+    "latency": "35.076236ms",
+    "method": "GET",
+    "protocol": "http",
+    "receivedBytes": 917,
+    "referer": "",
+    "reporter": "destination",
+    "requestId": "e3f7cffb-5642-434d-ae75-233a05b06158",
+    "requestSize": 0,
+    "requestedServerName": "outbound_.9080_._.productpage.default.svc.cluster.local",
+    "responseCode": 200,
+    "responseFlags": "-",
+    "responseSize": 4183,
+    "responseTimestamp": "2019-06-11T20:57:35.459150Z",
+    "sentBytes": 4328,
+    "sourceApp": "istio-ingressgateway",
+    "sourceIp": "10.44.0.8",
+    "sourceName": "ingressgateway-7748774cbf-bvf4j",
+    "sourceNamespace": "istio-control",
+    "sourceOwner": "kubernetes://apis/apps/v1/namespaces/istio-control/deployments/ingressgateway",
+    "sourcePrincipal": "cluster.local/ns/istio-control/sa/default",
+    "sourceWorkload": "ingressgateway",
+      "url": "/productpage",
+    "userAgent": "curl/7.54.0",
+    "xForwardedFor": "10.128.0.35"
+  }
+  ```
+
+  Fields of interest - source destination, requestId (correlation Id)
+
+* Deploy a collector service container in the cluster which can have access to these logs as they are a part of the same namespace.
+* Figure out how to access these logs
+* Also figure out the discovery process of all the microservices and their envoys in the cluster.
+* Push access logs to Kafka.
