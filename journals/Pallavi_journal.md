@@ -253,6 +253,162 @@ https://istio.io/docs/tasks/observability/logs/access-log/ -- Major to follow
   Fields of interest - source destination, requestId (correlation Id)
 
 * Deploy a collector service container in the cluster which can have access to these logs as they are a part of the same namespace.
+
 * Figure out how to access these logs
+
 * Also figure out the discovery process of all the microservices and their envoys in the cluster.
+
 * Push access logs to Kafka.
+
+
+
+### Envoy - L7 proxy
+
+* what is service mesh?
+
+  https://www.envoyproxy.io/docs/envoy/latest/intro/what_is_envoy
+
+  https://medium.com/hackernoon/service-mesh-with-envoy-101-e6b2131ee30b
+
+* front proxy headers generation - needs to setup an ingress proxy
+
+* Better than Nginx and HAproxy - 
+
+  - It can proxy any TCP protocol, even Websockets too
+
+  - Supports Bi-directional SSL
+
+  - Better support for HTTP/2 and can also translate in any direction between HTTP/2 and HTTP/1.1 
+
+  - Better flexibility in discovering services and load balancing
+
+  - It gives better visibility into the system like network traffic statistics.
+
+  - Easier set up
+
+  - Being a sidecar process, it is light-weight and is completely language agnostic to the application code.
+
+    https://www.datawire.io/envoyproxy/getting-started-envoyproxy-microservices-resilience/
+
+* what each trace data contains?
+
+  In tracing context, the first Envoy is responsible to inject an x-request-id HTTP header for unified logging. For correlation of requests, we are going to forward the headers using our custom-made libraries in the application code. In addition to the trace id, Envoy also adds information like:
+
+  - Originating service cluster set via --service-cluster.
+  - Start time and duration of the request.
+  - Originating host set via --service-node.
+  - Downstream cluster set via the x-envoy-downstream-service-cluster header.
+  - HTTP request URL, method, protocol and user-agent.
+  - Additional custom tags set via custom_tags.
+  - Upstream cluster name and address.
+  - HTTP response status code.
+  - GRPC response status and message (if available).
+  - An error tag when HTTP status is 5xx or GRPC status is not “OK”.
+  - Tracing system-specific metadata.
+
+* 
+
+  https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/observability/tracing
+
+* Access log format
+
+  ```
+  [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%"
+  %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION%
+  %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% "%REQ(X-FORWARDED-FOR)%" "%REQ(USER-AGENT)%"
+  "%REQ(X-REQUEST-ID)%" "%REQ(:AUTHORITY)%" "%UPSTREAM_HOST%"\n
+  ```
+
+Example of the default Envoy access log format:
+
+```
+[2016-04-15T20:17:00.310Z] "POST /api/v1/locations HTTP/2" 204 - 154 0 226 100 "10.0.35.28"
+"nsq2http" "cc21d9b0-cf5c-432b-8c7e-98aeb7988cd2" "locations" "tcp://10.0.2.1:80"
+```
+
+<https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log>
+
+* Envoy service mesh envoy example
+
+<https://hackernoon.com/distributed-tracing-with-envoy-service-mesh-jaeger-c365b6191592>
+
+* Thoughts - Can we configure only Envoy sidecars to be compatible with our use case? - yet to investigate
+
+
+
+### Setting up Istio on Microk8s
+
+* Steps followed :
+
+  ```
+  $ snap install microk8s --classic
+  add the user to the group shown from above command
+  also added alias for kubectl as microk8s kubectl and then su - $USER and restart
+  
+  $ microk8s.enable dns dashboard metrics-server istio
+  
+  $ microk8s status --wait-read
+  -- shows istio enabled
+  
+  $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc7/aio/deploy/recommended.yaml
+  
+  $ kubectl proxy
+  
+  $ microk8s.kubectl -n kube-system describe secret $token
+  Enter token in browser to get dashboard
+  ```
+
+* Microk8s has Istio 1.13 configured, but for tracing we require Istio version to be 1.15+
+
+* So disable Istio and run install again
+
+  ```
+  $ microk8s istioctl version
+  
+  $ microk8s disable istio
+   
+  $ curl -L https://istio.io/downloadIstio | sh -
+  
+  $ cd istio-1.5.1
+  
+  $ export PATH=$PWD/bin:$PATH
+  
+  $ istioctl manifest apply --set profile=demo
+  ```
+
+* With microk8s, somehow when installing Istio 1.15 latest version its erroring out for the above cmd. Error msg:
+
+  ```
+  Error: failed to apply manifests: failed to generate manifest: failed to determine JWT policy support. Use the --force flag to ignore this: Get https://127.0.0.1:16443/api?timeout=32s: x509: certificate signed by unknown authority
+  ```
+
+* Tried the following:
+
+  ```
+  $ istioctl manifest apply --set profile=demo --force
+  Same Error
+  
+  Checked for Kubectl apis to be running:
+  $ kubectl api-resources
+  Seems all good
+  
+  To determine if your cluster supports third party tokens, look for the TokenRequest API:
+  $ kubectl get --raw /api/v1 | jq '.resources[] | select(.name | index("serviceaccounts/token"))'
+  Gives an Empty response
+  If third party token enabled it should give a different O/P
+  https://istio.io/docs/ops/best-practices/security/
+  
+  $ istioctl manifest apply --set profile=demo --set values.global.jwtPolicy=first-party-jwt --force
+  No luck!
+  There is an open issue with Istio regarding the same error just reported on APr 15, 2020. 
+  ```
+
+* 1987  snap install microk8s --classic
+
+* Following up the above error on thread - 
+
+  https://github.com/istio/istio/issues/20946 
+
+  Issue though marked close on the last step - worked for some setup.
+
+  
