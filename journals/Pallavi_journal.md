@@ -306,8 +306,6 @@ https://istio.io/docs/tasks/observability/logs/access-log/ -- Major to follow
   - An error tag when HTTP status is 5xx or GRPC status is not “OK”.
   - Tracing system-specific metadata.
 
-* 
-
   https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/observability/tracing
 
 * Access log format
@@ -319,18 +317,17 @@ https://istio.io/docs/tasks/observability/logs/access-log/ -- Major to follow
   "%REQ(X-REQUEST-ID)%" "%REQ(:AUTHORITY)%" "%UPSTREAM_HOST%"\n
   ```
 
-Example of the default Envoy access log format:
+  Example of the default Envoy access log format:
 
-```
-[2016-04-15T20:17:00.310Z] "POST /api/v1/locations HTTP/2" 204 - 154 0 226 100 "10.0.35.28"
-"nsq2http" "cc21d9b0-cf5c-432b-8c7e-98aeb7988cd2" "locations" "tcp://10.0.2.1:80"
-```
+  ```
+  [2016-04-15T20:17:00.310Z] "POST /api/v1/locations HTTP/2" 204 - 154 0 226 100 "10.0.35.28" "nsq2http" "cc21d9b0-cf5c-432b-8c7e-98aeb7988cd2" "locations" "tcp://10.0.2.1:80"
+  ```
 
-<https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log>
+  <https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log>
 
 * Envoy service mesh envoy example
 
-<https://hackernoon.com/distributed-tracing-with-envoy-service-mesh-jaeger-c365b6191592>
+  <https://hackernoon.com/distributed-tracing-with-envoy-service-mesh-jaeger-c365b6191592>
 
 * Thoughts - Can we configure only Envoy sidecars to be compatible with our use case? - yet to investigate
 
@@ -403,12 +400,33 @@ Example of the default Envoy access log format:
   There is an open issue with Istio regarding the same error just reported on APr 15, 2020. 
   ```
 
-* 1987  snap install microk8s --classic
-
 * Following up the above error on thread - 
 
   https://github.com/istio/istio/issues/20946 
 
   Issue though marked close on the last step - worked for some setup.
+
+* Blocker on Microk8s Istio Setup - Comes with 1.3 but we require 1.5, above steps done to use Istio 1.5.
+
+* More on the same error: 
+
+  https://istio.io/docs/ops/common-problems/injection/
+
+  x-509 certs error, the md5sum should be the same, it is the same - 
+
+  ```
+  kubectl get mutatingwebhookconfiguration istio-sidecar-injector -o yaml -o jsonpath='{.webhooks[0].clientConfig.caBundle}' | md5sum
+  4b95d2ba22ce8971c7c92084da31faf0  -
+  $ kubectl -n istio-system get secret istio.istio-sidecar-injector-service-account -o jsonpath='{.data.root-cert\.pem}' | md5sum
+  4b95d2ba22ce8971c7c92084da31faf0  -
+  ```
+
+* Installed from path, no luck - 
+
+  ```
+  istioctl manifest apply --set installPackagePath=< path to istio releases >/istio-1.5.1/install/kubernetes/operator/charts --set profile=< path to istio releases >/istio-1.5.1/install/kubernetes/operator/profiles/default.yaml
+  ```
+
+* Istio has rolling upgrade (1.3 -> 1.4 -> 1.5), Tried upgrading 1.3 to 1.4, no luck and documentation is unclear https://archive.istio.io/v1.3/docs/setup/upgrade/steps/
 
   
