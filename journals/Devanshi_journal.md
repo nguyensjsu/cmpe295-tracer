@@ -57,3 +57,11 @@ https://istio.io/docs/examples/bookinfo/
 
 #### HOW DOES MIXER-BASED TRACING WORK?
 For Mixer-based tracing integrations, Mixer (addressed through the istio-telemetry service) provides the integration with tracing backends. The Mixer integration allows additional levels of operator control of the distributed tracing, including fine-grained selection of the data included in trace spans. It also provides the ability to send traces to backends not supported by Envoy directly.
+
+# Frontend Design
+
+Using React and Redux to develop frontend. Redux helps to manage the application data storage at one place.
+
+Using Redux Thunk Middleware to handle requesting data via GraphQL.
+
+react-sequence-diagram to display interactive component and sequence diagram to trace the application.
