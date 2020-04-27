@@ -40,6 +40,68 @@ Timestamp , Method , URL , Src_IP , Src_Port , Dest_IP , Dest_Port , Response_Co
 - The dashboard is used to create several visualization components that offer detailed information on individual services and on the overall system architecture, which is useful for documentation purposes. The defined visualizations are also useful for identifying design drawbacks, such as strong coupling between services, or other potential areas of architectural improvement.
 - This implementation is only limited to RESTful services.
 
+## A Trace Agent with Code No-invasion Based on ByteCode Enhancement Technology
+- This paper proposes a trace agent specifically for java language by instrumenting the byte code of the compiled jar.
+- The trace agent acquires trace logs without invading the code
+- Some parameters needs to be added when starting the service module in order to gather traces transparently.
+- This research is inspired from Google Dapper and Zipkin
+Steps:
+1. Use --javagent parameter when executing jar package to provide the agent.jar path
+2. Use the class loader to load the jar of the agent, each time the newly loaded class is enhanced by the code of the agent.
+3. Premain method of the agent is executed to add instrumentation and add transformations. Class loader needs to call back before each class is loaded.
+4. Execute the main method of the class.
+
+Trace Data Strucure
+| Name        | Description                                 |  
+|-------------|---------------------------------------------|
+|traceld      | Recording call chain unique identifier      |
+|rpcId        | Recording node path relation                |
+|traceName    | Recording request uri                       |  
+|invokerName  | Recording request upstream nodeservice name |
+|serviceName  | Recording request service name              |
+|methodName   | Recording request method name               |
+|rpcType      | Recording RPC type                          |
+|resultType   | Recording result type                       |  
+|isRoot       | Recording whether current node is root or not|
+|startTime    | Recording request start time                |
+|endTime      | Recording request end time                  |
+|ip           | Recording IP address                        |
+|pid          | Recording process id                        |
+|logs         | Recording additional information            |
+|product      | Recording product name                      |
+|url          | Recording request url                       |
+
+Algorithm:
+RpcContext class contains the trace data structure. There is a counter inside to guarantee the order of the RPC request. Inside the main program, when there are multiple child threads processing the request, the child thread inherits RpcContextThreadLocal of current parent. The RpcContextThreadLocal of the thread ensures that the information of parent thread can interact with the child thread.
+
+l: function BEFOREMETHOD
+2: if isNewTrace then
+3:      clientSend()
+4: else
+5:      serverRecv()
+6: end if
+7: end function
+8: function CLIENTSEND
+9: if hasParentContextQ then
+10:     childContext <— createChildContextQ
+11: else
+12:     startTrace()
+13: end if
+14: end function
+15: function SERVERRECV
+16: if validate (traceld) then
+17:       startTrace()
+18:       send()
+19: else
+20:   break
+21: end if
+22: end function
+
+The interceptor intercepts a method, and then determine whether it is a new trace. If it is a new trace, it will execute the clientSend method. The method sends an RPC call downstream. The current thread needs to have rpcContext, otherwise a trace will be created. If not, it will execute the serverRecv method, which receives the RPC call sent upstream and returns the processing result to the upstream after execution. Finally, it releases the current rpcContext. After the algorithm is executed, the construction of the trace will be completed. It will involve a traceId to ensure consistency in a distributed system. For instance, in case of HTTP to initiate a call between modules, the traceId can be in the HTTP header to ensure that the submodule can receive the traceId. If an RPC call is used, the traceId can be serialized to the submodule through the serialization protocol to ensure consistency. The trace data collected will be sent to the collector of the tracking system.
+
+
+
+
 
 
 # Industry Tools
