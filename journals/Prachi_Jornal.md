@@ -100,7 +100,22 @@ l: function BEFOREMETHOD
 The interceptor intercepts a method, and then determine whether it is a new trace. If it is a new trace, it will execute the clientSend method. The method sends an RPC call downstream. The current thread needs to have rpcContext, otherwise a trace will be created. If not, it will execute the serverRecv method, which receives the RPC call sent upstream and returns the processing result to the upstream after execution. Finally, it releases the current rpcContext. After the algorithm is executed, the construction of the trace will be completed. It will involve a traceId to ensure consistency in a distributed system. For instance, in case of HTTP to initiate a call between modules, the traceId can be in the HTTP header to ensure that the submodule can receive the traceId. If an RPC call is used, the traceId can be serialized to the submodule through the serialization protocol to ensure consistency. The trace data collected will be sent to the collector of the tracking system.
 
 
-
+## 2014-JBInsTrace A tracer of Java and JRE classes at basic-block granularity by dynamically instrumenting bytecode
+- JBInsTrace uses dynamic instrumentation instead of static instrumentation of code as static instrumentation would require transforming all classes that may or may not be used during execution. Dynamic instrumentation only the classes required during execution.
+- The premain method is a method called by the Java agent before the main method of the application but after the JVM has initialized. JBInsTrace uses premain to register its class transformer (Instrumentor) which will be applied on all future class definitions.The instrumentation must not add, remove or rename fields or methods, change the signatures
+of methods, or change inheritance.
+- Several tools and libraries exist to instrument bytecode but the ASM framework is chosen in this paper which provides libraries to parse Java classes and add bytecode, allowing complex transformations, with very low memory requirements.
+- Unique identifiers are assigned to each class, method and basic block. Static information is extracted from the class source code and the class is instrumented with new bytecodes.
+- This tool uses event number, to encode 3 pieces of information:
+• The 2 most significant bits encode the event type identifier: method start, method end, basic block execution.
+• The 19 bits in the middle encode the unique identifier of the method.
+• If the event type is the execution of a basic block, the 11 least significant bits represent the unique identifier of the basic
+block within the method (unused otherwise).
+- Every time an event occurs, the instrumented code calls the Tracer (via the notifyEvent static method) and passes it the associated event number and the current thread id.
+- JBInsTrace tracer provides files that contain the exact control flow of each thread at basic block level, plus static information about these basic blocks. This information is used by trace analyzer.
+- Each event of the trace is related to its static information saved and re-simulate the execution call stack to compute dynamic metrics.
+- ArgoUML v0.28, is used for loading UML diagrams.
+- There are some major performance impacts of using this tool hence should be used only when speed isn't the priority.
 
 
 
