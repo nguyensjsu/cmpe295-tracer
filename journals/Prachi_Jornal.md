@@ -138,3 +138,43 @@ JCall-Graph also leverages sampling to dramatically reduce the overhead of the s
 - Built-in implementations for the most common probe types: PING, HTTP, UDP, DNS.
 - https://github.com/google/cloudprober
 
+# Design and Implementation
+
+## Database design in Mongo
+
+![alt text](https://github.com/nguyensjsu/cmpe295-tracer/blob/master/journals/images/MongoDBSructure_1.png)
+
+## Kafka setup in docker
+
+1. Create Docker Network named kafka-net
+docker network create kafka-net --driver bridge
+
+2. Run Zookeeper using existing image (Bitnami)
+
+docker run --name zookeeper-server -p 2181:2181 --network kafka-net -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper:latest -d
+
+3. Test if zookeeper is running
+telnet localhost 2181
+
+4. Run Kafka Broker and expose port 9092
+docker run --name kafka-server1 --network kafka-net -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181 -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -p 9092:9092 bitnami/kafka:latest -deployment
+
+5. Add more brokers if needed and change the exposed port
+docker run --name kafka-server2 --network kafka-net -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181 -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9093 -p 9093:9092 bitnami/kafka:latest -d
+
+6. List topics
+docker exec -t kafka-server1 \
+  kafka-topics.sh \
+    --bootstrap-server :9092 \
+    --list
+
+7. Create topic
+docker exec -t kafka-server1 \
+  kafka-topics.sh \
+    --bootstrap-server :9092 \
+    --create \
+    --topic test \
+    --partitions 1 \
+    --replication-factor 1
+
+
