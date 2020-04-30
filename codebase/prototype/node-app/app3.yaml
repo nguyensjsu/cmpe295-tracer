@@ -1,0 +1,53 @@
+##################################################################################################
+# service 1
+##################################################################################################
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cmpe295-app-3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cmpe295-app-3
+  labels:
+    app: cmpe295-app-3
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: cmpe295-app-3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmpe295-app-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cmpe295-app-3
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: cmpe295-app-3
+        version: v1
+    spec:
+      serviceAccountName: cmpe295-app-3
+      containers:
+      - image: swadasmaunil/tracing-sample-app:public
+        imagePullPolicy: IfNotPresent
+        name: cmpe295-app-3
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVICE_NAME
+          value: service3
+        - name: PORT
+          value: "8080"
+        - name: SERVICE_REQUEST_LIST
+          value: "http://10.1.29.190:8080/" 
+
