@@ -23,7 +23,7 @@ def read_envoy_access_logs(app_no):
                 print("Line is ", json.loads(line))
             else:
                 print("Line skipped")
-        f.close()
+        # f.close()
         time.sleep(10)
 
 
