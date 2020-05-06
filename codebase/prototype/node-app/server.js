@@ -1,9 +1,17 @@
 const express = require('express')
 const app = express()
 const axios = require('axios').default;
-const port = process.env.PORT
+const port = process.env.PORT;
+const headersToPropagate = ["x-request-id", "x-b3-traceid", "x-b3-spanid", "x-b3-sampled", "x-b3-flags",
+    "x-ot-span-context", "end-user", "user-agent"];
+
+const setIstioHeaders = (req, res) => {
+    headersToPropagate.forEach(header => req.headers[header] && res.setHeader(header, req.headers[header]))
+};
 
 app.get('/', (req, res) => {
+    setIstioHeaders(req,res);
+
     let incomingReqTS = new Date()
     let obj = {};
     let list = process.env.SERVICE_REQUEST_LIST !== undefined
