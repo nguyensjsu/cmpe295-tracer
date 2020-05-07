@@ -31,5 +31,7 @@ if __name__ == "__main__":
     # work on discovering services and starting them
     app_1_process = threading.Thread(target=read_envoy_access_logs, args=(1,))
     app_2_process = threading.Thread(target=read_envoy_access_logs, args=(2,))
+    app_3_process = threading.Thread(target=read_envoy_access_logs, args=(3,))
     app_1_process.start()
     app_2_process.start()
+    app_3_process.start()
