@@ -4,51 +4,50 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cmpe-295-app-3
+  name: cmpe-295-app-2
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cmpe-295-app-3
+  name: cmpe-295-app-2
   labels:
-    app: cmpe-295-app-3
+    app: cmpe-295-app-2
 spec:
   ports:
   - name: http
     port: 8080
     targetPort: 8080
   selector:
-    app: cmpe-295-app-3
+    app: cmpe-295-app-2
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cmpe-295-app-3
+  name: cmpe-295-app-2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cmpe-295-app-3
+      app: cmpe-295-app-2
       version: v1
   template:
     metadata:
       labels:
-        app: cmpe-295-app-3
+        app: cmpe-295-app-2
         version: v1
     spec:
-      serviceAccountName: cmpe-295-app-3
+      serviceAccountName: cmpe-295-app-2
       containers:
       - image: pallavireddy/cmpe295-tracer-app:public
         imagePullPolicy: Always
-        name: cmpe-295-app-3
+        name: cmpe-295-app-1
         ports:
         - containerPort: 8080
         env:
         - name: SERVICE_NAME
-          value: service3
+          value: service2
         - name: PORT
           value: "8080"
         - name: SERVICE_REQUEST_LIST
-          value: "http://10.1.0.139:8080/"
-
+          value: "" 
 
