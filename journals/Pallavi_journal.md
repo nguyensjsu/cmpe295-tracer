@@ -429,4 +429,38 @@ https://istio.io/docs/tasks/observability/logs/access-log/ -- Major to follow
 
 * Istio has rolling upgrade (1.3 -> 1.4 -> 1.5), Tried upgrading 1.3 to 1.4, no luck and documentation is unclear https://archive.istio.io/v1.3/docs/setup/upgrade/steps/
 
+
+
+### Sample node app Istio cluster - Prototype setup
+
+* Worked on writing deployment yaml files for the sample nodejs app.
+* Built collector service as a multi-threaded application. Each thread runs for each microservice app to collect logs. Right now reading the entire logs and sending the new ones for prototype. Work on streaming logs and sending the newer logs, instead of reading the entire logs again.
+* Previously, built to be a pod in the kubernetes cluster running the app, but needed to point kubectl to kubectl of the cluster - now building it as a process.
+
+* ```
+  $ curl -L https://istio.io/downloadIstio | sh -
+  
+  $ cd istio-1.5.1
+  
+  $ export PATH=$PWD/bin:$PATH
+  
+  $ istioctl manifest apply --set profile=demo --set values.global.proxy.accessLogFile="/dev/stdout" --set values.global.proxy.accessLogEncoding="JSON"
+  
+  $ kubectl apply -f <(istioctl kube-inject -f app2.yaml)
+  
+  $ kubectl apply -f <(istioctl kube-inject -f app1.yaml)
+  
+  $ kubectl apply -f <(istioctl kube-inject -f app3.yaml)
+  
+  $  From app3 - curl -v -H "x-cmpe295-header: trial" localhost:8080 - should call app1 which calls app 2
+  
+  $ kubectl logs -l app=app1 -c istio-proxy
+  
+  $ kubectl logs -l app=app2 -c istio-proxy
+  
+  $ kubectl logs -l app=app3 -c istio-proxy
+  
+  $ python collector_service.py
+  ```
+
   
