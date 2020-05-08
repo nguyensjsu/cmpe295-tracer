@@ -60,8 +60,12 @@ For Mixer-based tracing integrations, Mixer (addressed through the istio-telemet
 
 # Frontend Design
 
-Using React and Redux to develop frontend. Redux helps to manage the application data storage at one place.
+Implemented React and Redux to develop frontend. Redux helps to manage the application data storage at one place.
 
-Using Redux Thunk Middleware to handle requesting data via GraphQL.
+Implemented Redux Thunk Middleware to handle requesting data from the backend.
+
+Developed the frontend UI using Material UI framework for React.
+
+Implemented Component Diagram using MxGraph-js library to trace the Request ID.
 
 react-sequence-diagram to display interactive component and sequence diagram to trace the application.

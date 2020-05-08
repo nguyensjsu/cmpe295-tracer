@@ -1,9 +1,23 @@
 const express = require('express')
 const app = express()
 const axios = require('axios').default;
-const port = process.env.PORT
+const port = process.env.PORT;
+const headersToPropagate = ["x-request-id", "x-b3-traceid", "x-b3-spanid", "x-b3-sampled", "x-b3-flags",
+    "x-ot-span-context", "end-user", "user-agent", "x-cmpe295-header"];
+
+const getIstioHeaders = (req) => {
+    let headers = {};
+    headersToPropagate.map(header => {
+	    if (req.headers[header]) headers[header] = req.headers[header]
+    });
+    return headers;
+};
 
 app.get('/', (req, res) => {
+    console.log("-----------------------------");
+    console.log(req.headers);
+    console.log("-----------------------------");
+
     let incomingReqTS = new Date()
     let obj = {};
     let list = process.env.SERVICE_REQUEST_LIST !== undefined
@@ -21,7 +35,7 @@ app.get('/', (req, res) => {
         }, 1000)
     } else {
         Promise.all(list.map(url =>
-            new Promise((resolve, reject) => axios.get(url)
+            new Promise((resolve, reject) => axios.get(url, {headers: getIstioHeaders(req)})
                 .then(function (response) {
                     if (obj.children === undefined) {
                         obj.children = [response.data]

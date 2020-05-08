@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - image: pallavireddy/collector-service:public
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: collector-service
         ports:
         - containerPort: 8080
