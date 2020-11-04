@@ -11,6 +11,21 @@ let movies = new Schema(
         },
         runtime: {
             type: Number
+        },
+        format: {
+            type: String
+        },
+        city: {
+            type: String
+        },
+        releaseYear: {
+            type: Number
+        },
+        releaseMonth: {
+            type: Number
+        },
+        releaseDay: {
+            type: Number
         }
     },
     {collection: "movies"}
