@@ -8,9 +8,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Graph({
                    nodes, links,
-                   startNode, setStartNode,
-                   endNode, setEndNode,
-                   paths, setPaths,
                    highlightedPath,
                    onSelect
                }) {
@@ -18,7 +15,7 @@ function Graph({
     let simulation;
     const ref = useRef();
     const classes = useStyles()
-    const nodeRadius = 55;
+    const nodeRadius = 15;
 
     const dragstarted = (e, d) => {
         if (!e.active) simulation.alphaTarget(0.3).restart()
@@ -41,11 +38,6 @@ function Graph({
             .attr('marker-end', 'url(#arrowhead)')
             .attr("stroke", "#ccc")
 
-        // link.append("title")
-        //     .text(function (d) {
-        //         return d.type;
-        //     });
-
         let node = d3.select(ref.current)
             .selectAll(".node")
             .data(nodes)
@@ -58,7 +50,7 @@ function Graph({
             )
 
         node.append("circle")
-            .attr("r",nodeRadius)
+            .attr("r", nodeRadius)
             .attr("fill", "cadetblue")
 
         node.append("title")
@@ -67,19 +59,22 @@ function Graph({
             });
 
         node.append("text")
-            .attr("r", nodeRadius/4)
+            .attr("r", nodeRadius / 4)
+            .attr("y", -35)
             .style("font-size", "14px")
             .text(function (d) {
                 return d.label;
             })
         node.append("text")
-            .attr("r", nodeRadius/4)
-            .attr("y", nodeRadius/2)
+            .attr("r", nodeRadius / 4)
+            .attr("y", -20)
             .style("font-size", "12px")
             .text(function (d) {
                 return d.ip;
             });
-        node.on("click",(e,d)=>{onSelect(d);console.log("here",e,d)})
+        node.on("click", (e, d) => {
+            onSelect(d);
+        })
     }
 
     const ticked = () => {
@@ -134,31 +129,6 @@ function Graph({
 
         update()
     }, [nodes, links])
-
-    useEffect(_ => {
-        !!highlightedPath && highlighPath(highlightedPath)
-    }, [highlightedPath])
-
-    const highlighPath = path => {
-
-        let edges = []
-        for (let i = 0; i < path.length - 1; i++) {
-            edges.push({source: path[i], target: path[i + 1]})
-        }
-
-        d3.select(ref.current)
-            .selectAll(".link")
-            .attr("stroke", function (d) {
-                return edges.find(e => d.source.name === e.source && d.target.name === e.target) ? "#000" : "#ddd";
-            });
-
-        d3.select(ref.current)
-            .selectAll(".node")
-            .selectAll("circle")
-            .attr("fill", function (d) {
-                return path.find(n => n === d.name) ? "cadetblue" : "#aaa";
-            });
-    }
 
     return (
         <div className={classes.root}>
