@@ -3,20 +3,23 @@ const express = require('express');
 // const data = require('./data');
 const app = express();
 const api = require('./data/services');
+const logs = require('./data/logs')
+
+app.use((req,res,next) => {
+    res.header("Access-Control-Allow-Origin","*"); 
+    next();
+});
 
 app.get("/services", (req, res, next) => {
-    res.header("Access-Control-Allow-Origin","*");
     res.json(api.services());
 });
 
 app.get("/links", (req, res, next) => {
-    res.header("Access-Control-Allow-Origin","*");
     res.json(api.links());
 });
 
 app.get("/logs", (req, res, next) => {
-    res.header("Access-Control-Allow-Origin","*");
-    res.json(api.logs());
+    res.json(logs);
 });
 
 app.listen(8081, () => {

@@ -3,6 +3,7 @@ import axios from 'axios';
 import {makeStyles} from "@material-ui/core/styles";
 import Graph from "./Graph";
 import DetailsPanel from "./DetailsPanel";
+import {updateData} from '../Library'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,21 +19,10 @@ export default function (props) {
     const [links, setLinks] = useState([]);
 
     useEffect(() => {
-        // Get data and update here
-        // this is called once when the page loads
-        console.log("use effect is called");
-
-        axios.get(`http://localhost:8081/services`)
-            .then(res => {
-                const serviceNodes = res.data;
-                setNodes(serviceNodes);
-            })
-
-        axios.get(`http://localhost:8081/links`)
-            .then(res => {
-                const serviceLinks = res.data;
-                setLinks(serviceLinks);
-            })
+        updateData().then(({nodes,links}) => {
+            setNodes(nodes)
+            setLinks(links)
+        })
 
     }, []);
 
