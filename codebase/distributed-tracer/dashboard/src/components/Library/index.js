@@ -8,7 +8,8 @@ export async function updateData() {
     nodes = getNodes(logs)
     return {
         nodes: nodes.map(n => ({name: n, label: n, ip: "0.0.0.0"})),
-        links: getLinks(logs, nodes)
+        links: getLinks(logs, nodes),
+        logs: logs
     }
 }
 

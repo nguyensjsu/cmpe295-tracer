@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios';
 import {makeStyles} from "@material-ui/core/styles";
 import Graph from "./Graph";
 import DetailsPanel from "./DetailsPanel";
@@ -15,13 +14,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function (props) {
     const classes = useStyles();
+    const [logs, setLogs] = useState([]);
     const [nodes, setNodes] = useState([]);
     const [links, setLinks] = useState([]);
 
     useEffect(() => {
-        updateData().then(({nodes,links}) => {
+        updateData().then(({nodes,links,logs}) => {
             setNodes(nodes)
             setLinks(links)
+            setLogs(logs)
         })
 
     }, []);
@@ -42,13 +43,8 @@ export default function (props) {
                 highlightedPath={highlightedPath}
             />
             <DetailsPanel
+                logs={logs}
                 selectedNode={selectedNode}
-                nodes={nodes} links={links}
-                startNode={startNode} setStartNode={setStartNode}
-                endNode={endNode} setEndNode={setEndNode}
-                paths={paths} setPaths={setPaths}
-                highlightedPath={highlightedPath}
-                setHighlightedPath={setHighlightedPath}
             />
         </div>
     );
