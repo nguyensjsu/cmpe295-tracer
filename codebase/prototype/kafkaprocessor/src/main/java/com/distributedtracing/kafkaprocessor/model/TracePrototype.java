@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 
-@Document(collection = "traceLog")
+@Document(collection = "traceLogs")
 public class TracePrototype {
     @JsonProperty("request_id")
     String requestId;
@@ -29,9 +29,13 @@ public class TracePrototype {
     String x_forwarded_for;
     String bytes_sent;
     String upstream_cluster;
-
-    public TracePrototype() {
-    }
+    //additional fields
+    String log_source;
+    String appName;
+    String spanId;
+    String parentSpanId;
+    String body;
+    String log_type;
 
     @Override
     public String toString() {
@@ -56,8 +60,90 @@ public class TracePrototype {
                 ", x_forwarded_for='" + x_forwarded_for + '\'' +
                 ", bytes_sent='" + bytes_sent + '\'' +
                 ", upstream_cluster='" + upstream_cluster + '\'' +
+                ", log_source='" + log_source + '\'' +
+                ", appName='" + appName + '\'' +
+                ", spanId='" + spanId + '\'' +
+                ", parentSpanId='" + parentSpanId + '\'' +
+                ", body='" + body + '\'' +
+                ", log_type='" + log_type + '\'' +
                 '}';
     }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getLog_source() {
+        return log_source;
+    }
+
+    public void setLog_source(String log_source) {
+        this.log_source = log_source;
+    }
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getSpanId() {
+        return spanId;
+    }
+
+    public void setSpanId(String spanId) {
+        this.spanId = spanId;
+    }
+
+    public String getParentSpanId() {
+        return parentSpanId;
+    }
+
+    public void setParentSpanId(String parentSpanId) {
+        this.parentSpanId = parentSpanId;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getLog_type() {
+        return log_type;
+    }
+
+    public void setLog_type(String log_type) {
+        this.log_type = log_type;
+    }
+
+    public TracePrototype() {
+    }
+
+//    @Override
+//    public String toString() {
+//        return "TracePrototype{" +
+//                "requestId='" + requestId + '\'' +
+//                ", downstream_remote_address='" + downstream_remote_address + '\'' +
+//                ", authority='" + authority + '\'' +
+//                ", path='" + path + '\'' +
+//                ", protocol='" + protocol + '\'' +
+//                ", upstream_service_time='" + upstream_service_time + '\'' +
+//                ", upstream_local_address='" + upstream_local_address + '\'' +
+//                ", duration='" + duration + '\'' +
+//                ", upstream_transport_failure_reason='" + upstream_transport_failure_reason + '\'' +
+//                ", route_name='" + route_name + '\'' +
+//                ", downstream_local_address='" + downstream_local_address + '\'' +
+//                ", user_agent='" + user_agent + '\'' +
+//                ", response_code='" + response_code + '\'' +
+//                ", response_flags='" + response_flags + '\'' +
+//                ", start_time='" + start_time + '\'' +
+//                ", method='" + method + '\'' +
+//                ", upstream_host='" + upstream_host + '\'' +
+//                ", x_forwarded_for='" + x_forwarded_for + '\'' +
+//                ", bytes_sent='" + bytes_sent + '\'' +
+//                ", upstream_cluster='" + upstream_cluster + '\'' +
+//                '}';
+//    }
 
     public String getRequestId() {
         return requestId;
