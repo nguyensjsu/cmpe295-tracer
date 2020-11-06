@@ -11,12 +11,14 @@ function Graph({
                    startNode, setStartNode,
                    endNode, setEndNode,
                    paths, setPaths,
-                   highlightedPath
+                   highlightedPath,
+                   onSelect
                }) {
 
     let simulation;
     const ref = useRef();
     const classes = useStyles()
+    const nodeRadius = 55;
 
     const dragstarted = (e, d) => {
         if (!e.active) simulation.alphaTarget(0.3).restart()
@@ -56,7 +58,7 @@ function Graph({
             )
 
         node.append("circle")
-            .attr("r", 15)
+            .attr("r",nodeRadius)
             .attr("fill", "cadetblue")
 
         node.append("title")
@@ -65,11 +67,19 @@ function Graph({
             });
 
         node.append("text")
-            .attr("dy", -3)
-            .attr("dx", "50")
+            .attr("r", nodeRadius/4)
+            .style("font-size", "14px")
             .text(function (d) {
                 return d.label;
+            })
+        node.append("text")
+            .attr("r", nodeRadius/4)
+            .attr("y", nodeRadius/2)
+            .style("font-size", "12px")
+            .text(function (d) {
+                return d.ip;
             });
+        node.on("click",(e,d)=>{onSelect(d);console.log("here",e,d)})
     }
 
     const ticked = () => {

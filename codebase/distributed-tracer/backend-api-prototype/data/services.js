@@ -1,11 +1,11 @@
 const services = () => ([
-    {name: "n0", "label": "Frontend"},
-    {name: "n1", "label": "Browse"},
-    {name: "n2", "label": "Inventory"},
-    {name: "n3", "label": "Recommendation"},
-    {name: "n4", "label": "Discounts"},
-    {name: "n5", "label": "RegionalOffers"},
-    {name: "n6", "label": "HolidayOffers"}
+    {name: "n0", "label": "Frontend", "ip":"10.1.2.0"},
+    {name: "n1", "label": "Browse", "ip":"10.1.2.1"},
+    {name: "n2", "label": "Inventory", "ip":"10.1.2.2"},
+    {name: "n3", "label": "Recommendation", "ip":"10.1.2.3"},
+    {name: "n4", "label": "Discounts", "ip":"10.1.2.4"},
+    {name: "n5", "label": "RegionalOffers", "ip":"10.1.2.5"},
+    {name: "n6", "label": "HolidayOffers", "ip":"10.1.2.6"}
 ]);
 
 const links = () => ([
@@ -47,5 +47,15 @@ const links = () => ([
     },
 ]);
 
+const logs = () => ([
+    "Node0 n0 This are the logs 1 for node0",
+    "Node0 n0 This are the logs 2 for node0",
+    "Node0 n0 This are the logs 3 for node0",
+    "Node1 n1 This are the logs for node1",
+    "Node2 n2 This are the logs for node2",
+    "Node3 n3 This are the logs for node3"
+]);
+
 exports.services = services ;
 exports.links = links ;
+exports.logs = logs ;

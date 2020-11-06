@@ -19,11 +19,12 @@ import Tooltip from "@material-ui/core/Tooltip";
 const useStyles = makeStyles((theme) => ({
     root: {
         background: "white",
-        width: 100,
+        width: 200,
         display: "flex",
         alignItems: "center",
         padding: 20,
-        justifyContent: "center"
+        justifyContent: "center",
+        flexDirection: "column"
     },
     formControl: {
         width: "calc(33% - 10px)",
@@ -40,6 +41,23 @@ const useStyles = makeStyles((theme) => ({
     },
     listItem: {
         padding: 20
+    },
+
+    iconContainer: {
+        display:'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: "absolute",
+        bottom: 0,
+        backgroundColor: 'lightgrey',
+        width:200,
+    },
+    logsData:{
+        padding:20,
+        position:'absolute',
+        top:0,
+        wordBreak: 'wrap'
+
     }
 }));
 
@@ -48,7 +66,8 @@ export default function ({
                              startNode, setStartNode,
                              endNode, setEndNode,
                              paths, setPaths,
-                             highlightedPath, setHighlightedPath
+                             highlightedPath, setHighlightedPath,
+                             selectedNode
                          }) {
     const classes = useStyles();
 
@@ -61,11 +80,16 @@ export default function ({
 
     return (
         <div className={classes.root}>
-            <Tooltip title="Show Sequence Diagram">
-            <IconButton onClick={() => {
-                window.location = '/sequence-diagram'
-            }}><ArrowForwardIosIcon/></IconButton>
-            </Tooltip>
+            <div className={classes.logsData}>{selectedNode.name} {selectedNode.ip}</div>
+            <div className={classes.iconContainer}>
+                <Tooltip title="Show Sequence Diagram">
+                    <IconButton onClick={() => {
+                        window.location = '/sequence-diagram'
+                    }}>
+                        <ArrowForwardIosIcon/>
+                    </IconButton>
+                </Tooltip>
+            </div>
             {/*<div>*/}
             {/*    <FormControl variant="outlined" className={classes.formControl}>*/}
             {/*        <InputLabel>Start Node</InputLabel>*/}

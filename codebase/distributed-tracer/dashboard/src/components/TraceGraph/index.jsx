@@ -40,9 +40,11 @@ export default function (props) {
     const [endNode, setEndNode] = useState("n2")
     const [paths, setPaths] = useState([])
     const [highlightedPath, setHighlightedPath] = useState("")
+    const [selectedNode, setSelectedNode] = useState({})
     return (
         <div className={classes.root}>
             <Graph
+                onSelect={setSelectedNode}
                 nodes={nodes} links={links}
                 startNode={startNode} setStartNode={setStartNode}
                 endNode={endNode} setEndNode={setEndNode}
@@ -50,6 +52,7 @@ export default function (props) {
                 highlightedPath={highlightedPath}
             />
             <DetailsPanel
+                selectedNode={selectedNode}
                 nodes={nodes} links={links}
                 startNode={startNode} setStartNode={setStartNode}
                 endNode={endNode} setEndNode={setEndNode}

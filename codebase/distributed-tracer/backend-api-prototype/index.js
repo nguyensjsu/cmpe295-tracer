@@ -14,6 +14,11 @@ app.get("/links", (req, res, next) => {
     res.json(api.links());
 });
 
+app.get("/logs", (req, res, next) => {
+    res.header("Access-Control-Allow-Origin","*");
+    res.json(api.logs());
+});
+
 app.listen(8081, () => {
     console.log("Server running on port 8081");
 });
