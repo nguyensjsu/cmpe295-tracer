@@ -1,6 +1,6 @@
 const cinemaModel = require("../../Models");
 const dotenv = require('dotenv').config();
-const axios = require('axios');
+const {movieDetails: movieDetailsCall} = require('../../Services');
 const errResponse = {
     message: "No shows to premier"
 };
@@ -14,16 +14,15 @@ module.exports = async (req, res) => {
             });
         cinemaDetails = cinemaDetails.toJSON();
         const filteredMovies = cinemaDetails.moviePremieres.find(movie => movie.movieId == req.params.movieId);
-        const movieUrl = `${process.env.MOVIES_URL}/movies/${req.params.movieId}`;
-        const movieDetails = await axios.get(movieUrl);
-        if(filteredMovies && movieDetails.data.length > 0) {
+        const movieDetails = await movieDetailsCall(req.params.movieId, req);
+        if (filteredMovies && movieDetails.data.length > 0) {
             filteredMovies.details = movieDetails.data[0];
             cinemaDetails.moviePremieres = filteredMovies;
             res.send(cinemaDetails);
-        }else{
+        } else {
             res.status(500).send(errResponse);
         }
-    }catch(e) {
+    } catch (e) {
         res.status(500).send(errResponse);
     }
 };

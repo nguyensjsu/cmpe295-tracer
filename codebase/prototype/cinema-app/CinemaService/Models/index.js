@@ -41,7 +41,7 @@ let cinema = new Schema(
         city: {
             type: String
         },
-        moviePremieres:[moviePremieresSchema]
+        moviePremieres: [moviePremieresSchema]
     },
     {collection: "cinema"}
 );
