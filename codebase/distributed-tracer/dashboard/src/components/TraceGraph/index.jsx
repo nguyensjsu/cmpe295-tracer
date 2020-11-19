@@ -3,6 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Graph from "./Graph";
 import DetailsPanel from "./DetailsPanel";
 import {updateData} from '../Library'
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,15 +18,16 @@ export default function (props) {
     const [logs, setLogs] = useState([]);
     const [nodes, setNodes] = useState([]);
     const [links, setLinks] = useState([]);
+    const {uuid} = useParams()
 
     useEffect(() => {
-        updateData().then(({nodes,links,logs}) => {
+        updateData(uuid).then(({nodes, links, logs}) => {
             setNodes(nodes)
             setLinks(links)
             setLogs(logs)
         })
 
-    }, []);
+    }, [uuid]);
 
     const [startNode, setStartNode] = useState("n0")
     const [endNode, setEndNode] = useState("n2")

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import TextField from "@material-ui/core/TextField";
-import {fetchTraceIDs} from '../../API/index'
+import {fetchTraceIDs} from '../../API'
 import MaterialTable from "material-table";
 import icons from "../../utils/Table/icons";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -42,8 +42,7 @@ export default function (props) {
                     icon: ArrowForwardIosIcon,
                     tooltip: 'Show Trace',
                     onClick: (event, rowData) => {
-                        // Do save operation
-                        window.location = '/tracegraph'
+                        window.location = '/#/trace-graph/' + rowData.id
                     }
                 }
             ]}
@@ -56,6 +55,8 @@ export default function (props) {
             data={traceIdList}
             options={{
                 // filtering: true,
+                padding:"dense",
+                pageSize:100,
                 actionsColumnIndex: -1
             }}
         />
