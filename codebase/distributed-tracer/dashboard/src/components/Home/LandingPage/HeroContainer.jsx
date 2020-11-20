@@ -53,7 +53,7 @@ export default function (props) {
                     <Typography component="h1" variant="h2" color="inherit" gutterBottom>
                         {props.title}
                     </Typography>
-                    <Button variant="contained" className={classes.whiteColor} href={"/tracelist"}>
+                    <Button variant="contained" className={classes.whiteColor} href={"/#/trace-list"}>
                         Get Started
                     </Button>
                 </Grid>

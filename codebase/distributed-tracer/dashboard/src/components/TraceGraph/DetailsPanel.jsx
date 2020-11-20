@@ -27,9 +27,24 @@ const useStyles = makeStyles((theme) => ({
 export default function ({selectedNode, logs}) {
     const classes = useStyles();
     const [filterLogs, setFilterLogs] = useState([])
+    const [microserviceInfo, setMicroserviceInfo] = useState({})
 
     useEffect(_ => {
-        setFilterLogs(logs.filter(l => l.appName === selectedNode.name))
+        let appLogs = logs.filter(l => l.appName === selectedNode.name)
+        setFilterLogs(appLogs)
+        let info = appLogs.find(l => {
+            let istioLog = l.istioLog
+            return !!(istioLog && istioLog.upstream_cluster && istioLog.upstream_cluster.split("|")[0] === "inbound");
+        })
+        setMicroserviceInfo(info)
+        // if (info) {
+        //     setMicroserviceInfo({
+        //         method: info.method,
+        //         start_time: info.start_time,
+        //         path: info.path,
+        //         protocol: info.protocol
+        //     })
+        // }
     }, [selectedNode])
 
     return (
@@ -37,7 +52,11 @@ export default function ({selectedNode, logs}) {
             <div className={classes.logsData}>
                 <h2>{selectedNode.name}</h2>
                 <Typography className={classes.pos} color="textSecondary">
-                    {selectedNode.ip}
+                    {/*{JSON.stringify(microserviceInfo)}*/}
+                    Method: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.method}<br/>
+                    Start Time: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.start_time}<br/>
+                    Path: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.path}<br/>
+                    Protocol: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.protocol}<br/>
                 </Typography>
                 <div className={classes.logContainer}>
                     {selectedNode.name && <ReactJson enableClipboard={false} src={filterLogs}/>}
@@ -55,3 +74,4 @@ export default function ({selectedNode, logs}) {
         </div>
     );
 }
+

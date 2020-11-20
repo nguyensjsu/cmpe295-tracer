@@ -2,18 +2,18 @@ import React from 'react';
 import './App.css';
 import TraceGraph from "./components/TraceGraph/index";
 import Home from "./components/Home/index";
-import TraceList from "./components/Home/TraceList";
+import TraceList from "./components/TraceList/index";
 import SeqDia from "./components";
 
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {HashRouter as Router, Switch, Route} from 'react-router-dom';
 
 function App() {
     return (
         <Router>
             <Switch>
                 <Route exact path='/' component={Home}/>
-                <Route path='/tracelist' component={TraceList}/>
-                <Route path='/tracegraph' component={TraceGraph}/>
+                <Route path='/trace-list' component={TraceList}/>
+                <Route path='/trace-graph/:uuid' component={TraceGraph}/>
                 <Route path='/sequence-diagram' component={SeqDia}/>
             </Switch>
         </Router>

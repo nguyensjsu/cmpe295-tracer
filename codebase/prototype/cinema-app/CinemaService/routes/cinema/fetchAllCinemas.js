@@ -1,4 +1,5 @@
 const cinemaModel = require("../../Models")
+const dotenv = require('dotenv').config();
 const {movieDetails: movieDetailsCall} = require('../../Services');
 const errResponse = {
     status: 500,
@@ -14,8 +15,10 @@ module.exports = (req, res) => {
                 const movieDetails = await movieDetailsCall(result.moviePremieres[i].movieId,req);
                 result.moviePremieres[i].details = movieDetails.data;
             }
+            logger.log('info', result);
             res.send(result);
         } else {
+	    logger.error(`error in fetching all cinemas ${errResponse}`);
             res.status(500).send(errResponse);
         }
     })

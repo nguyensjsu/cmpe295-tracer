@@ -14,6 +14,7 @@
     "express": "^4.17.1",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.11",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "winston-logzio": "^5.1.2"
   }
 }

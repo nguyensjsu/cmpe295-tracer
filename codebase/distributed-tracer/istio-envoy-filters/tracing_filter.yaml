@@ -1,0 +1,81 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: lua-filter
+  namespace: default
+spec:
+  configPatches:
+    # The first patch adds the lua filter to the listener/http connection manager
+  - applyTo: HTTP_FILTER
+    match:
+      context: ANY
+      listener:
+        portNumber: 8080
+        filterChain:
+          filter:
+            name: "envoy.http_connection_manager"
+            subFilter:
+              name: "envoy.router"
+    patch:
+      operation: INSERT_BEFORE
+      value: # lua filter specification
+        name: envoy.lua
+        typed_config:
+          "@type": "type.googleapis.com/envoy.config.filter.http.lua.v2.Lua"
+          inlineCode: |
+           function envoy_on_request(request_handle)
+             local index = 0
+             local flag = true
+             local request = request_handle:headers():get("x-request-id")
+             local span = request_handle:headers():get("x-b3-spanid")
+             local parent = request_handle:headers():get("x-b3-parentspanid")
+
+             if (not parent) then
+               parent = "EMPTY"
+             end
+             if (not span) then
+               span = "EMPTY"
+             end
+             if (not request) then
+               request = "EMPTY"
+             end
+             
+             for chunk in request_handle:bodyChunks() do
+               flag = false
+               local len = chunk:length()
+               local result = chunk:getBytes(index, len)
+               index = index + len
+               result = string.gsub(result, "\n", "")
+               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|"..result)
+             end
+
+             if (flag) then 
+               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|{}")
+             end
+
+           end
+
+           function envoy_on_response(response_handle)
+             local index = 0
+             local flag = true
+             local response_headers = response_handle:headers():get("x-response-headers")
+             if (not response_headers) then
+               response_headers = "EMPTY"
+             end
+
+             for chunk in response_handle:bodyChunks() do
+               flag = false
+               local len = chunk:length()
+               local result = chunk:getBytes(index, len)
+               index = index + len
+               result = string.gsub(result, "\n", "")
+               response_handle:logCritical("cmpe295-generator-service|RESPONSE|"..response_handle:headers():get("x-request-id").."|"..response_headers.."|"..result)
+             end
+
+             if (flag) then 
+               response_handle:logCritical("cmpe295-generator-service|RESPONSE|"..response_handle:headers():get("x-request-id").."|"..response_headers.."|{}")
+             end
+
+           end
+
+
