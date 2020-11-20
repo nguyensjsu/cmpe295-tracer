@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: my-service
+  namespace: default
+spec:
+  configPatches:
+    - applyTo: NETWORK_FILTER
+      match:
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.http_connection_manager"
+      patch:
+        operation: MERGE
+        value:
+          typed_config:
+            "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
+            http2_protocol_options:
+              initial_stream_window_size: 104857600
+              initial_connection_window_size: 104857600 # 100 MB
+            always_set_request_id_in_response: true
