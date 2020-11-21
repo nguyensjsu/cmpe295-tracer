@@ -55,16 +55,17 @@ module.exports = async (req, res) => {
         };
         const notificationData = {
             "nameOnCard": req.body.nameOnCard,
-            "cardType": req.body.cardType,
             "amount": showDetails.price,
             "bookingId": bookingId,
-            "email": req.body.email
+            "email": req.body.email,
+            "cinemaid": cinemaId,
+            "movieid": movieId,
         };
 
         Promise.all(
             [
                 bookCinemaCall(req, cinemaAllocateData),
-                notificationCall(req, paymentData)
+                notificationCall(req, notificationData)
             ]).then(d => res.status(200).send("Successfully booked"))
 
     } catch (e) {

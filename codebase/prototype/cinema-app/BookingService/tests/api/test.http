@@ -5,6 +5,7 @@ Accept: */*
 Cache-Control: no-cache
 Content-Type: application/json
 Cookie: token=;
+x-unique-spanid: 123456789
 
 {
   "cinemaId": "1",
