@@ -1,6 +1,6 @@
 const generateReceipt = require('./generateReceipt');
 
 module.exports = (app) => {
-    app.get('/receipt/generate', generateReceipt);
+    app.post('/receipt/generate', generateReceipt);
 
 };

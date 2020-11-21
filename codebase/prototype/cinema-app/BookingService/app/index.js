@@ -14,6 +14,12 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
 
+app.use((req, res, next) => {
+    res.set("Access-Control-Allow-Origin", "*")
+    res.set("Access-Control-Allow-Headers", "*")
+    next()
+})
+
 app.use(authMiddleware);
 app.use(headerTransferMiddleware);
 

@@ -8,3 +8,4 @@ module.exports = (app) => {
     app.get('/movie/title/:title', fetchMovieByTitle);
     app.get('/movies/city/:city', fetchMoviesByCity);
 };
+

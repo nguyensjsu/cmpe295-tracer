@@ -1,42 +1,23 @@
-# GET call
-GET http://localhost:8080/api?param1=1&param2=2
-Accept: */*
-Cache-Control: no-cache
-Content-Type: application/json
-Cookie: TOKEN=asasd;
-
-###
 
 # POST call
-POST http://localhost:8080/api
+POST http://localhost:8084/book
 Accept: */*
 Cache-Control: no-cache
 Content-Type: application/json
 Cookie: token=;
 
 {
-  "key": "value"
+  "cinemaId": "1",
+  "movieId": "1",
+  "showTime": "13:00",
+  "seats": "2",
+  "cardNumber": "123467890123",
+  "nameOnCard": "John",
+  "expMonth": "1234",
+  "cvv": "000",
+  "cardType": "visa",
+  "userId": "1",
+  "email": "abc@abc.com"
 }
-
-###
-
-# PUT call
-PUT http://localhost:8080/api
-Accept: */*
-Cache-Control: no-cache
-Content-Type: application/json
-Cookie: token=;
-
-{
-  "key": "value"
-}
-
-###
-
-# DELETE call
-DELETE http://localhost:8080/api?param1=1
-Accept: */*
-Cache-Control: no-cache
-Content-Type: application/json
 
 ###
