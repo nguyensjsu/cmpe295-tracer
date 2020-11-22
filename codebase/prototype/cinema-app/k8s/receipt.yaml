@@ -1,58 +1,48 @@
 ##################################################################################################
-# Movies Service
+# Receipt Service
 ##################################################################################################
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cmpe295-movies-service
+  name: cmpe295-receipt-service
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cmpe295-movies-service
+  name: cmpe295-receipt-service
   labels:
-    app: cmpe295-movies-service
+    app: cmpe295-receipt-service
 spec:
   ports:
   - name: http
     port: 8080
     targetPort: 8080
   selector:
-    app: cmpe295-movies-service
+    app: cmpe295-receipt-service
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cmpe295-movies-service
+  name: cmpe295-receipt-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cmpe295-movies-service
+      app: cmpe295-receipt-service
       version: v1
   template:
     metadata:
       labels:
-        app: cmpe295-movies-service
+        app: cmpe295-receipt-service
         version: v1
     spec:
-      serviceAccountName: cmpe295-movies-service
+      serviceAccountName: cmpe295-receipt-service
       containers:
-      - image: gcr.io/engaged-oarlock-288121/movie-service:v1
+      - image: gcr.io/engaged-oarlock-288121/receipt-service:v1
         imagePullPolicy: Always
-        name: cmpe295-movies-service
+        name: cmpe295-receipt-service
         ports:
         - containerPort: 8080
         env:
         - name: PORT
           value: "8080"
-        - name: DB_USERNAME
-          value: "admin"
-        - name: DB_PASSWORD
-          value: "cmpe295"
-        - name: DB_HOST
-          value: "mongo"
-        - name: DB_PORT
-          value: "27017"
-        - name: DB_NAME
-          value: "movies"
