@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {makeStyles} from "@material-ui/core/styles";
 import Graph from "./Graph";
 import DetailsPanel from "./DetailsPanel";
-import {updateData} from '../Library'
+import {updateData} from '../../Library'
 import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
