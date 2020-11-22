@@ -30,6 +30,7 @@ spec:
              local span = request_handle:headers():get("x-b3-spanid")
              local parent = request_handle:headers():get("x-b3-parentspanid")
              local uniqueSpanId = request_handle:headers():get("x-unique-spanid")
+             local responseTime = request_handle:headers():get("x-response-time")
              
              if (not parent) then
                parent = "EMPTY"
@@ -43,6 +44,9 @@ spec:
              if (not uniqueSpanId) then
                uniqueSpanId = "EMPTY"
              end
+             if (not responseTime) then
+               responseTime = "EMPTY"
+             end
              
              for chunk in request_handle:bodyChunks() do
                flag = false
@@ -50,11 +54,11 @@ spec:
                local result = chunk:getBytes(index, len)
                index = index + len
                result = string.gsub(result, "\n", "")
-               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|"..result.."|"..uniqueSpanId.."|"..os.time())
+               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|"..result.."|"..uniqueSpanId.."|"..responseTime)
              end
 
              if (flag) then 
-               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|{}|"..uniqueSpanId.."|"..os.time())
+               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|{}|"..uniqueSpanId.."|"..responseTime)
              end
              local streamInfo = request_handle:streamInfo()
 
@@ -64,9 +68,13 @@ spec:
              local index = 0
              local flag = true
              local response_headers = response_handle:headers():get("x-response-headers")
+             local responseTime = response_handle:headers():get("x-response-time")
 
              if (not response_headers) then
                response_headers = "EMPTY"
+             end
+             if (not responseTime) then
+               responseTime = "EMPTY"
              end
 
              for chunk in response_handle:bodyChunks() do
@@ -75,11 +83,11 @@ spec:
                local result = chunk:getBytes(index, len)
                index = index + len
                result = string.gsub(result, "\n", "")
-               response_handle:logCritical("cmpe295-generator-service|RESPONSE|"..response_handle:headers():get("x-request-id").."|"..response_headers.."|"..result)
+               response_handle:logCritical("cmpe295-generator-service|RESPONSE|"..response_handle:headers():get("x-request-id").."|"..response_headers.."|"..result.."|"..responseTime)
              end
 
              if (flag) then 
-               response_handle:logCritical("cmpe295-generator-service|RESPONSE|"..response_handle:headers():get("x-request-id").."|"..response_headers.."|{}")
+               response_handle:logCritical("cmpe295-generator-service|RESPONSE|"..response_handle:headers():get("x-request-id").."|"..response_headers.."|{}|"..responseTime)
              end
 
            end
