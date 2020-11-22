@@ -1,6 +1,5 @@
 const cinemaModel = require("../../Models");
 const dotenv = require('dotenv').config();
-const logger = require("../../logger")
 
 const {movieDetails: movieDetailsCall} = require('../../Services');
 const errResponse = {
@@ -20,14 +19,11 @@ module.exports = async (req, res) => {
         if (filteredMovies && movieDetails.data.length > 0) {
             filteredMovies.details = movieDetails.data[0];
             cinemaDetails.moviePremieres = filteredMovies;
-	    logger.log('info', cinemaDetails);
             res.send(cinemaDetails);
         } else {
-	    logger.error(`error ${errResponse}`);
             res.status(500).send(errResponse);
         }
     } catch (e) {
-	logger.error(`error ${errResponse}`);
         res.status(500).send(errResponse);
     }
 };
