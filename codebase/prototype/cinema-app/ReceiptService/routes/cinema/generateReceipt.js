@@ -1,12 +1,12 @@
-const fs = require('fs');
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
 const errResponse = {
     message: "Unable to generate receipt"
 };
 
 module.exports = (req, res) => {
     try {
-        res.status(200).render("invoice");
+        responseWrapper(res).status(200).render("invoice");
     } catch (e) {
-        res.status(500).send(e);
+        responseWrapper(res).status(500).send(e);
     }
 };

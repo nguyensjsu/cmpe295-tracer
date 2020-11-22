@@ -1,4 +1,5 @@
 const bookingModel = require("../../Models");
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
 const {v4: uuidv4} = require('uuid');
 const {paymentCall: paymentCall, cinemaDetailsCall: cinemaDetailsCall, notificationCall: notificationCall, bookCinemaCall: bookCinemaCall} = require('../../Services');
 const errResponse = {
@@ -14,11 +15,11 @@ module.exports = async (req, res) => {
         //1. get amount from cinema service
         const cinemaDetails = await cinemaDetailsCall(req, cinemaId, movieId);
         if (!cinemaDetails.data || cinemaDetails.data.moviePremieres.length === 0 || cinemaDetails.data.moviePremieres.shows.length === 0) {
-            res.status(500).json({message: "no shows to book"});
+            responseWrapper(res).status(500).json({message: "no shows to book"});
         }
         const showDetails = cinemaDetails.data.moviePremieres.shows.find(show => show.time === showTime);
         if (!showDetails || showDetails.seatsEmpty < seats) {
-            res.status(500).json({message: "no shows to book"});
+            responseWrapper(res).status(500).json({message: "no shows to book"});
         }
 
         // 2. make payment through payment service
@@ -66,9 +67,9 @@ module.exports = async (req, res) => {
             [
                 bookCinemaCall(req, cinemaAllocateData),
                 notificationCall(req, notificationData)
-            ]).then(d => res.status(200).send("Successfully booked"))
+            ]).then(d => responseWrapper(res).status(200).send("Successfully booked"))
 
     } catch (e) {
-        res.status(500).send(e);
+        responseWrapper(res).status(500).send(e);
     }
 };

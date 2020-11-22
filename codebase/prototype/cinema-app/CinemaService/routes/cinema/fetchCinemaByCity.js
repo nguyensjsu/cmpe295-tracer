@@ -1,6 +1,6 @@
 const cinemaModel = require("../../Models")
 const dotenv = require('dotenv').config();
-
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
 const {movieDetails: movieDetailsCall} = require('../../Services');
 const errResponse = {
     status: 500,
@@ -14,9 +14,9 @@ module.exports = (req, res) => {
                 const movieDetails = await movieDetailsCall(result.moviePremieres[i].movieId, req);
                 result.moviePremieres[i].details = movieDetails.data;
             }
-            res.send(result);
+            responseWrapper(res).send(result);
         } else {
-            res.status(500).send(errResponse);
+            responseWrapper(res).status(500).send(errResponse);
         }
     })
 };

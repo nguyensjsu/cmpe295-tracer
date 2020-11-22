@@ -13,11 +13,15 @@ module.exports = {
     },
     getHeadersToPropagate: (req) => {
         let headers = {
-            "x-unique-spanid": Math.floor(Math.random() * 899999 + 100000)
+            "x-unique-spanid": Math.floor(Math.random() * 899999 + 100000),
+            "x-response-time": new Date().getTime()
         };
         headersToPropagate.map(header => {
             if (req.headers[header]) headers[header] = req.headers[header]
         });
         return headers;
+    },
+    responseWrapper(res) {
+        return res.set("x-response-time", new Date().getTime())
     }
 };

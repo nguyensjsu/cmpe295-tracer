@@ -1,9 +1,10 @@
 # GET call
-GET http://localhost:8080/api?param1=1&param2=2
+GET http://localhost:8082/cinema/1/1
 Accept: */*
 Cache-Control: no-cache
 Content-Type: application/json
 Cookie: TOKEN=asasd;
+x-response-time:1
 
 ###
 

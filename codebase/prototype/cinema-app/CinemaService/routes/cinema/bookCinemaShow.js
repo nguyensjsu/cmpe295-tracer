@@ -1,3 +1,5 @@
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
+
 module.exports = (req, res) => {
-    res.status(200).send("Successfully booked show");
+    responseWrapper(res).status(200).send("Successfully booked show");
 };

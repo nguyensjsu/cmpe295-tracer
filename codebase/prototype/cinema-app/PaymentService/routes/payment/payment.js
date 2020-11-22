@@ -1,4 +1,5 @@
 const {VisaService, MasterCardService} = require("../../Services");
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
 
 module.exports = (req, res) => {
     const cardNumber = req.body.cardNumber
@@ -9,17 +10,17 @@ module.exports = (req, res) => {
     const amount = req.body.amount
     if (cardType === "visa") {
         VisaService(cardNumber, nameOnCard, expMonth, cvv, amount).then(message => {
-            res.status(200).json({message: "payment successful"})
+            responseWrapper(res).status(200).json({message: "payment successful"})
         }).catch(err => {
-            res.status(500).json({message: "payment failed - " + err.toString()})
+            responseWrapper(res).status(500).json({message: "payment failed - " + err.toString()})
         })
     } else if (cardType === "mastercard") {
         MasterCardService(cardNumber, nameOnCard, expMonth, cvv, amount).then(message => {
-            res.status(200).json({message: "payment successful"})
+            responseWrapper(res).status(200).json({message: "payment successful"})
         }).catch(err => {
-            res.status(500).json({message: "payment failed - " + err.toString()})
+            responseWrapper(res).status(500).json({message: "payment failed - " + err.toString()})
         })
     } else {
-        res.status(500).json({message: "Invalid card!"})
+        responseWrapper(res).status(500).json({message: "Invalid card!"})
     }
 };

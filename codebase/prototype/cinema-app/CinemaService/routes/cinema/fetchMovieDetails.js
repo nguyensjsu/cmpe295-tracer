@@ -1,6 +1,6 @@
 const cinemaModel = require("../../Models");
 const dotenv = require('dotenv').config();
-
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
 const {movieDetails: movieDetailsCall} = require('../../Services');
 const errResponse = {
     message: "No shows to premier"
@@ -19,11 +19,11 @@ module.exports = async (req, res) => {
         if (filteredMovies && movieDetails.data.length > 0) {
             filteredMovies.details = movieDetails.data[0];
             cinemaDetails.moviePremieres = filteredMovies;
-            res.send(cinemaDetails);
+            responseWrapper(res).send(cinemaDetails);
         } else {
-            res.status(500).send(errResponse);
+            responseWrapper(res).status(500).send(errResponse);
         }
     } catch (e) {
-        res.status(500).send(errResponse);
+        responseWrapper(res).status(500).send(errResponse);
     }
 };

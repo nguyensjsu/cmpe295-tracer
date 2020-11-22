@@ -1,4 +1,5 @@
 const {receiptCall: receiptCall, sendEmailService} = require('../../Services');
+const {responseWrapper} = require("../../middlewares/cmpe-295-tracer")
 
 const errResponse = {
     message: "Unable to send notification. Please contact support"
@@ -14,11 +15,11 @@ module.exports = async (req, res) => {
         };
         const receipt = await receiptCall(req, receiptData);
         sendEmailService(req.body.email, receipt).then(message => {
-            res.status(200).json({message: "Successfully sent notification"})
+            responseWrapper(res).status(200).json({message: "Successfully sent notification"})
         }).catch(err => {
-            res.status(500).send(errResponse);
+            responseWrapper(res).status(500).send(errResponse);
         });
     } catch (e) {
-        res.status(500).send(e);
+        responseWrapper(res).status(500).send(e);
     }
 };
