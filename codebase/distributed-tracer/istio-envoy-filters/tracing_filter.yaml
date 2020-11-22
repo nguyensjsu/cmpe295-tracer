@@ -29,7 +29,8 @@ spec:
              local request = request_handle:headers():get("x-request-id")
              local span = request_handle:headers():get("x-b3-spanid")
              local parent = request_handle:headers():get("x-b3-parentspanid")
-
+             local uniqueSpanId = request_handle:headers():get("x-unique-spanid")
+             
              if (not parent) then
                parent = "EMPTY"
              end
@@ -39,6 +40,9 @@ spec:
              if (not request) then
                request = "EMPTY"
              end
+             if (not uniqueSpanId) then
+               uniqueSpanId = "EMPTY"
+             end
              
              for chunk in request_handle:bodyChunks() do
                flag = false
@@ -46,12 +50,13 @@ spec:
                local result = chunk:getBytes(index, len)
                index = index + len
                result = string.gsub(result, "\n", "")
-               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|"..result)
+               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|"..result.."|"..uniqueSpanId.."|"..os.time())
              end
 
              if (flag) then 
-               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|{}")
+               request_handle:logCritical("cmpe295-generator-service|REQUEST|"..request.."|"..span.."|"..parent.."|{}|"..uniqueSpanId.."|"..os.time())
              end
+             local streamInfo = request_handle:streamInfo()
 
            end
 
@@ -59,6 +64,7 @@ spec:
              local index = 0
              local flag = true
              local response_headers = response_handle:headers():get("x-response-headers")
+
              if (not response_headers) then
                response_headers = "EMPTY"
              end
@@ -77,5 +83,6 @@ spec:
              end
 
            end
+
 
 

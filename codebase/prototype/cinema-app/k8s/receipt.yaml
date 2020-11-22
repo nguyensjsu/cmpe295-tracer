@@ -38,7 +38,7 @@ spec:
     spec:
       serviceAccountName: cmpe295-receipt-service
       containers:
-      - image: gcr.io/engaged-oarlock-288121/receipt-service:v1
+      - image: gcr.io/distribute-tracing/receipt-service:v1
         imagePullPolicy: Always
         name: cmpe295-receipt-service
         ports:

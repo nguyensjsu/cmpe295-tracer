@@ -38,7 +38,7 @@ spec:
     spec:
       serviceAccountName: cmpe295-movies-service
       containers:
-      - image: gcr.io/engaged-oarlock-288121/movie-service:v1
+      - image: gcr.io/distribute-tracing/movie-service:v1
         imagePullPolicy: Always
         name: cmpe295-movies-service
         ports:

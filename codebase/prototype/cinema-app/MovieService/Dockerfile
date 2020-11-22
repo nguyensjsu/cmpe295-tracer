@@ -1,4 +1,4 @@
-FROM node:6.14.2
+FROM node:10
 COPY . .
 RUN npm install
 CMD [ "npm", "start" ]
