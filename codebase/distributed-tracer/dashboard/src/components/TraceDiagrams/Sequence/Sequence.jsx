@@ -71,28 +71,27 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
-/*
-* drawlabels();
-* drawlines(start, end);
-* update([messages] -> [{start,end,body}]); will use drawlabels and drawitems (clear and draw from scratch)
-* parser([currMessages])              logic for getting next messages
-* */
-
 export default function ({labels, logs}) {
     const classes = useStyles();
     const ref = useRef();
 
     const [messages, setMessages] = useState([]);
-    const [displayList, setDisplayList] = useState([]);
-    const [endIndex, setEndIndex] = useState(0);
-    const [noNewPaths, setNoNewPaths] = useState(false);
+    const [optionList, setOptionList] = useState([]);
+    const [selection, setSelection] = useState(null)
+    const [appLogs, setAppLogs] = useState({});
 
     useEffect(() => {
-        next();
+        let logsForLabel = {}
+        labels.forEach(label => {
+            let tempLogs = logs.filter(l => l.appName === label.name)
+            tempLogs.sort((a, b) => a.spanId.split("|")[2] - b.spanId.split("|")[2])
+            logsForLabel[label.name] = tempLogs
+        })
+        console.log(logsForLabel)
+        setAppLogs(logsForLabel)
     }, [logs]);
+
     useEffect(() => {
-        console.log(messages)
         drawLabels();
         drawMessages(messages);
     }, [messages]);
@@ -133,54 +132,85 @@ export default function ({labels, logs}) {
 
     const next = () => {
         if (messages.length === 0) {
-            let log = logs.find(log => log.parentSpanId === "EMPTY" && log.spanId.split('|')[0] === "EMPTY");
-            let response = logs.find(l => l.log_type === "RESPONSE" && l.spanId.split('|')[1] === log.spanId.split('|')[1]);
-
-            !!log && setMessages([{
-                ...log,
+            setMessages([{
                 start: "User",
-                end: log.appName,
-                message: log.method + ' ' + log.path
-            }, {
-                ...response,
-                start: response.appName,
-                end: "User",
-                message: response.body
-            }]);
-            setEndIndex(1);
+                end: logs[0].appName,
+                message: logs[0].method + ' ' + logs[0].path,
+                time: 0,
+                uniqueId: logs[0].spanId.split("|")[1],
+                type: "REQUEST"
+            }])
         } else {
-            let lastMsg = messages[messages.length - 1];
-            let nextPaths = logs.filter(log => log.appName === lastMsg.appName && log.log_type === "REQUEST" && log.spanId !== lastMsg.spanId && log.upstream_cluster.split('|')[0] === 'outbound');
-            if(endIndex===messages.length)
-                console.log("start again!!!");
-            if(noNewPaths) {
-                setEndIndex(prev => prev + 1);
-                return;
+            let currentApp = messages[messages.length - 1]
+            let currentAppLogs = appLogs[currentApp.end]
+            for (let i = 0; i < currentAppLogs.length; i++) {
+                if (currentAppLogs[i].spanId.split("|")[2] > currentApp.time) {
+                    let currentAppLog = currentAppLogs[i]
+                    if (currentAppLog.log_type === "RESPONSE") {
+                        let requestInMessages = messages.find(m => m.uniqueId === currentAppLog.spanId.split("|")[1] && m.type === "REQUEST")
+                        if (!requestInMessages) continue;
+
+                        let destination = logs.find(l => l.appName !== currentApp.end && l.log_type === "RESPONSE" && currentAppLog.spanId.split("|")[1] === l.spanId.split("|")[1])
+
+                        setMessages([...messages, {
+                            start: currentApp.end,
+                            end: !!destination ? destination.appName : "User",
+                            message: requestInMessages.message,
+                            time: !!destination ? Math.max(Number(destination.spanId.split("|")[2]), Number(currentAppLog.spanId.split("|")[2])) : Number(currentAppLog.spanId.split("|")[2]),
+                            uniqueId: currentAppLog.spanId.split("|")[1],
+                            type: "RESPONSE"
+                        }])
+                    } else {
+                        if (currentAppLog.upstream_cluster.split("|")[0] === "outbound") {
+                            let requests = [currentAppLog]
+
+                            for (let j = i + 1; j < currentAppLogs.length; j++) {
+                                if (currentAppLogs[j].log_type === "REQUEST" && currentAppLogs[j].upstream_cluster.split("|")[0] === "outbound")
+                                    requests.push(currentAppLogs[j])
+                                else if (currentAppLogs[j].log_type === "RESPONSE") {
+                                    break;
+                                }
+                            }
+                            if (requests.length > 1) {
+                                setOptionList(requests)
+                                return
+                            }
+
+                            setMessages([...messages, {
+                                start: currentApp.end,
+                                end: currentAppLog.authority.split(":")[0],
+                                message: currentAppLog.method + ' ' + currentAppLog.path,
+                                time: currentAppLog.spanId.split("|")[2],
+                                uniqueId: currentAppLog.spanId.split("|")[1],
+                                type: "REQUEST"
+                            }])
+                        }
+                    }
+                    break;
+                }
             }
-            if(nextPaths.length > 1) {
-                console.log(nextPaths);
-                setDisplayList(nextPaths);
-            } else if (nextPaths.length === 0){
-                setEndIndex(prev => prev + 1);
-                setNoNewPaths(true);
-            }
-            // else if (nextPaths.length === 1){
-            //     let response1 = logs.find(l => l.log_type === "RESPONSE" && l.spanId.split('|')[1] === nextPaths[0].spanId.split('|')[1]);
-            //     let log1 = nextPaths[0];
-            //     !!log1 && setMessages([{
-            //         ...log1,
-            //         // start: "User",
-            //         // end: log1.appName,
-            //         // message: log1.method + ' ' + log1.path
-            //     }, {
-            //         ...response1,
-            //         // start: response1.appName,
-            //         // end: "User",
-            //         // message: response1.body
-            //     }]);
-            // }
         }
-    };
+    }
+
+    const prev = _ => {
+        setMessages(messages.slice(0, messages.length - 1))
+    }
+
+    const selectOption = _ => {
+        let currentApp = messages[messages.length - 1]
+        if (selection) {
+            setMessages([...messages, {
+                start: currentApp.end,
+                end: selection.authority.split(":")[0],
+                message: selection.method + ' ' + selection.path,
+                time: selection.spanId.split("|")[2],
+                uniqueId: selection.spanId.split("|")[1],
+                type: "REQUEST"
+            }])
+            setOptionList([])
+        }
+    }
+
     const drawLabels = () => {
         labels.forEach(function (c, i) {
             d3.select(ref.current)
@@ -221,48 +251,47 @@ export default function ({labels, logs}) {
         });
     };
 
-    function drawMessages() {
-        let svg = d3.select(ref.current);
-        svg.selectAll('.message').remove();
-        svg.selectAll('.label').remove();
+    function drawMessages(messages) {
+
+        let svg = d3.select(ref.current)
+        svg.selectAll('.message').remove()
+        svg.selectAll('.label').remove()
 
         messages.forEach(function (m, i) {
-            if (i < endIndex) {
-                let y = YPAD + MESSAGE_ARROW_Y_OFFSET + i * MESSAGE_SPACE;
-                svg.append("line")
-                    .style("stroke", "black")
-                    .attr("class", "message")
-                    .attr("x1", XPAD + labels.findIndex(label => label.name === m.start) * VERT_SPACE)
-                    .attr("y1", y)
-                    .attr("x2", XPAD + labels.findIndex(label => label.name === m.end) * VERT_SPACE)
-                    .attr("y2", y)
-                    .attr("marker-end", "url(#end)")
-                    .append("text")
-                    .text(function (d) {
-                        return m.message;
-                    })
-            }
+            let start = labels.findIndex(label => label.name === m.start)
+            let end = labels.findIndex(label => label.name === m.end)
+            let y = YPAD + MESSAGE_ARROW_Y_OFFSET + i * MESSAGE_SPACE;
+            svg.append("line")
+                .style("stroke", "black")
+                .attr("class", "message")
+                .attr("x1", XPAD + start * VERT_SPACE)
+                .attr("y1", y)
+                .attr("x2", XPAD + end * VERT_SPACE)
+                .attr("y2", y)
+                .attr("marker-end", "url(#end)")
+                .attr("marker-start", function (...atr) {
+                })
+                .append("text")
+                .text(function (d) {
+                    return m.message;
+                })
         });
 
         messages.forEach(function (m, i) {
-                if (i < endIndex) {
-                    let start = labels.findIndex(label => label.name === m.start);
-                    let end = labels.findIndex(label => label.name === m.end)
-                    let xPos = XPAD + MESSAGE_LABEL_X_OFFSET + (((end - start) * VERT_SPACE) / 2) + (start * VERT_SPACE) + 40;
-                    let yPos = YPAD + MESSAGE_LABEL_Y_OFFSET + i * MESSAGE_SPACE;
+            let start = labels.findIndex(label => label.name === m.start)
+            let end = labels.findIndex(label => label.name === m.end)
+            let xPos = XPAD + MESSAGE_LABEL_X_OFFSET + (((end - start) * VERT_SPACE) / 2) + (start * VERT_SPACE) + 40;
+            let yPos = YPAD + MESSAGE_LABEL_Y_OFFSET + i * MESSAGE_SPACE;
 
-                    svg.append("g")
-                        .attr("transform", "translate(" + xPos + "," + yPos + ")")
-                        .attr("class", "first label")
-                        .append("text")
-                        .text(function (d) {
-                            return m.message;
-                        });
-                }
-            }
-        );
-
-    };
+            svg.append("g")
+                .attr("transform", "translate(" + xPos + "," + yPos + ")")
+                .attr("class", "first label")
+                .append("text")
+                .text(function (d) {
+                    return m.message;
+                })
+        });
+    }
 
     return (
         <div className={classes.root}>
@@ -278,16 +307,21 @@ export default function ({labels, logs}) {
             <div className={classes.detailsPanel}>
                 <div className={classes.buttonContainer}>
                     <button className={classes.button}>&lt;&lt;</button>
-                    <button className={classes.button}> &lt; </button>
+                    <button onClick={prev} className={classes.button}> &lt; </button>
 
-                    <button onClick={next} className={classes.button}>&gt;</button>
+                    <button onClick={optionList.length === 0 ? next : selectOption}
+                            className={classes.button}>&gt;</button>
                     <button className={classes.button}>&gt;&gt;</button>
                 </div>
                 <br/>
-                {displayList.map((msg, idx) => (
+                {optionList.map((msg, idx) => (
                     <>
-                        <input type="radio" id={msg.authority} name={msg.authority} value={msg.authority}/>
-                        <label htmlFor={msg.authority}>{msg.authority}</label><br/>
+                        <label>
+                            <input type="radio" name={"name"} onClick={e => setSelection(msg)}
+                                   value={msg.authority}/>
+                            {msg.authority}
+                        </label>
+                        <br/>
                     </>
                 ))}
                 <br/>
