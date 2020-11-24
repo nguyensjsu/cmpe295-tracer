@@ -1,0 +1,12 @@
+# POST call
+POST http://localhost:8083/payment
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Cookie: token=;
+
+{
+  "cardType": "visa"
+}
+
+###

@@ -1,0 +1,24 @@
+{
+  "name": "cmpe295-cinema-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "hbs": "^4.1.1",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.11",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "winston-logzio": "^5.1.2"
+  }
+}
