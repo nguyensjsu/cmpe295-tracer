@@ -6,12 +6,13 @@ import icons from "../../utils/Table/icons";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import {makeStyles} from "@material-ui/core/styles";
 import {Link} from "react-router-dom";
+import SearchAppBar from "../AppBar";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "calc(100% - 400px)",
-        paddingTop: theme.spacing(10),
-        margin: '0px auto'
+        // width: "calc(100% - 200px)",
+        // paddingTop: theme.spacing(10),
+        // margin: '0px auto'
     },
     textField: {
         marginBottom: theme.spacing(2),
@@ -25,19 +26,12 @@ export default function (props) {
     useEffect(_ => {
         fetchTraceIDs().then(d => setTraceIdList(d))
     }, [])
-    return <div className={classes.root}>
 
-        <TextField label="TraceID" variant="outlined" className={classes.textField}/>
+    return <div className={classes.root}>
+        <SearchAppBar/>
         <MaterialTable
             icons={icons}
             actions={[
-                {
-                    icon: icons.Export,
-                    tooltip: 'Save Data',
-                    onClick: (event, rowData) => {
-                        // Do save operation
-                    }
-                },
                 {
                     icon: ArrowForwardIosIcon,
                     tooltip: 'Show Trace',
@@ -48,15 +42,16 @@ export default function (props) {
             ]}
             title="Trace ID List"
             columns={[
-                {title: 'URL', field: 'url'},
-                {title: 'UUID', field: 'id'},
-                {title: 'Time stamp', field: 'timestamp', type: 'datetime'},
+                {title: 'Entrypoint URL', field: 'url'},
+                {title: 'Request Identifier', field: 'id'},
+                {title: 'Request Start Time', field: 'timestamp', type: 'datetime'},
             ]}
             data={traceIdList}
             options={{
-                // filtering: true,
-                padding:"dense",
-                pageSize:100,
+                filtering: true,
+                // padding: "dense",
+                search: false,
+                pageSize: 20,
                 actionsColumnIndex: -1
             }}
         />

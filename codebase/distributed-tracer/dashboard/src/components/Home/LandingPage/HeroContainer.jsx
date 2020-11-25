@@ -9,16 +9,20 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection:'column',
+        flexDirection: 'column',
         backgroundColor: '#323480',
-        backgroundImage: 'linear-gradient(to top right, #323480, #8FCAF9)',
+        backgroundImage: 'linear-gradient(to top right, #323480, #3F52B5,#8FCAF9)',
         color: '#fff',
-        minHeight: '80%',
+        minHeight: '600px',
     },
     whiteColor: {
-        color: '#000',
-        backgroundColor: "#E4F5F5",
-        marginRight: '5px'
+        color: '#fff',
+        borderColor: "white",
+        marginRight: '5px',
+        "&:hover": {
+            color: '#dedede',
+            borderColor: "#dedede",
+        }
     }
 
 }));
@@ -31,12 +35,13 @@ export const HeroContainer = (props) => {
                 {props.title}
             </Typography>
             <div>
-            <Button variant="contained" className={classes.whiteColor} href="">
-                Get Started
-            </Button>
-            <Button variant="contained" className={classes.whiteColor} href={"/#/trace-list"}>
-                Dashboard
-            </Button>
+                <Button variant="outlined" size={"large"} className={classes.whiteColor}
+                        onClick={_ => window.scrollTo(0, 601)}>
+                    Get Started
+                </Button>
+                <Button variant="outlined" size={"large"} className={classes.whiteColor} href={"/#/trace-list"}>
+                    Dashboard
+                </Button>
             </div>
         </div>
     )

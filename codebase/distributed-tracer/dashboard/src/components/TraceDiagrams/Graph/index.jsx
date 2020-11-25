@@ -3,13 +3,14 @@ import {makeStyles} from "@material-ui/core/styles";
 import Graph from "./Graph";
 import {DetailsPanel} from "./DetailsPanel";
 import {updateData} from '../../Library'
-import {useParams} from "react-router-dom";
+import SearchAppBar from "../../AppBar";
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        background: "white",
         display: 'flex',
         width: "100%",
-        height: "100vh",
+        height: "calc(100vh - 64px)",
     },
 }));
 
@@ -35,19 +36,23 @@ export default function (props) {
     const [highlightedPath, setHighlightedPath] = useState("");
     const [selectedNode, setSelectedNode] = useState({});
     return (
-        <div className={classes.root}>
-            <Graph
-                onSelect={setSelectedNode}
-                nodes={nodes} links={links}
-                startNode={startNode} setStartNode={setStartNode}
-                endNode={endNode} setEndNode={setEndNode}
-                paths={paths} setPaths={setPaths}
-                highlightedPath={highlightedPath}
-            />
-            <DetailsPanel
-                logs={logs}
-                selectedNode={selectedNode}
-            />
+        <div className={classes.container}>
+            <SearchAppBar/>
+            <div className={classes.root}>
+                <Graph
+                    onSelect={setSelectedNode}
+                    nodes={nodes} links={links}
+                    startNode={startNode} setStartNode={setStartNode}
+                    endNode={endNode} setEndNode={setEndNode}
+                    paths={paths} setPaths={setPaths}
+                    highlightedPath={highlightedPath}
+                />
+                <DetailsPanel
+                    logs={logs}
+                    selectedNode={selectedNode}
+                    setSelectedNode={setSelectedNode}
+                />
+            </div>
         </div>
     );
 }

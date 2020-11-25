@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {makeStyles} from "@material-ui/core/styles";
-import ReactJson from "react-json-view";
-import Typography from "@material-ui/core/Typography";
+import {LogsViewer} from "./LogsViewer";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         background: "white",
-        width: 1000,
+        borderLeft: "1px solid #ddd",
         padding: 20,
     },
     iconContainer: {},
@@ -17,17 +16,18 @@ const useStyles = makeStyles((theme) => ({
     },
     logContainer: {
         overflowY: "auto",
-        alignSelf: "stretch"
+        alignSelf: "stretch",
+        width: "50vw",
+        maxWidth: "50vw",
     },
     pos: {
         marginBottom: 12,
     },
 }));
 
-export const DetailsPanel = ({selectedNode, logs}) => {
+export const DetailsPanel = ({selectedNode, logs, setSelectedNode}) => {
     const classes = useStyles();
     const [filterLogs, setFilterLogs] = useState([])
-    const [microserviceInfo, setMicroserviceInfo] = useState({})
 
     useEffect(_ => {
         let appLogs = logs.filter(l => l.appName === selectedNode.name)
@@ -36,31 +36,23 @@ export const DetailsPanel = ({selectedNode, logs}) => {
             let istioLog = l.istioLog
             return !!(istioLog && istioLog.upstream_cluster && istioLog.upstream_cluster.split("|")[0] === "inbound");
         })
-        setMicroserviceInfo(info)
-        // if (info) {
-        //     setMicroserviceInfo({
-        //         method: info.method,
-        //         start_time: info.start_time,
-        //         path: info.path,
-        //         protocol: info.protocol
-        //     })
-        // }
+
     }, [selectedNode])
+
+    useEffect(_ => {
+        if (logs.length !== 0) {
+            let selectedLog = logs.find(l => l.parentSpanId === "EMPTY" && l.spanId.split("|")[0] === "EMPTY")
+            if (selectedLog)
+                setSelectedNode({name: selectedLog.appName})
+        }
+    }, [logs])
 
     return (
         <div className={classes.root}>
             <div className={classes.logsData}>
                 <h2>{selectedNode.name}</h2>
-                <Typography className={classes.pos} color="textSecondary">
-                    {/*{JSON.stringify(microserviceInfo)}*/}
-                    Method: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.method}<br/>
-                    Start
-                    Time: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.start_time}<br/>
-                    Path: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.path}<br/>
-                    Protocol: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.protocol}<br/>
-                </Typography>
                 <div className={classes.logContainer}>
-                    {selectedNode.name && <ReactJson enableClipboard={false} src={filterLogs}/>}
+                    {selectedNode.name && <LogsViewer allLogs={logs} logs={filterLogs}/>}
                 </div>
             </div>
             <div className={classes.iconContainer}>
