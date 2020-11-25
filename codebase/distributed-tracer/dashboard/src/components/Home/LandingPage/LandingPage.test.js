@@ -12,6 +12,5 @@ describe('<Home />', () => {
         expect(wrapper.exists('HeroContainer')).toEqual(true);
         expect(wrapper.exists('Contributors')).toEqual(true);
         expect(wrapper.exists('GuideCard')).toEqual(true);
-        expect(wrapper.exists('Copyright')).toEqual(true);
     });
 });

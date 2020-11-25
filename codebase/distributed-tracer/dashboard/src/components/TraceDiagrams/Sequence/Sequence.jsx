@@ -3,6 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import * as d3 from "d3";
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import {IconButton} from "@material-ui/core";
+import SearchAppBar from "../../AppBar";
 
 const XPAD = 120;
 const YPAD = 20;
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         padding: '10px',
         paddingLeft: '20px',
         overflow: 'visible',
-        width: 'inherit'
+        width: 'inherit',
     },
     root: {
         width: "100vw",
@@ -31,15 +32,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'space-between'
 
-    },
-    backPanel: {
-        background: "white",
-        width: 20,
-        display: "flex",
-        alignItems: "center",
-        padding: 20,
-        justifyContent: "center",
-        height: '100vh'
     },
     detailsPanel: {
         padding: '20px',
@@ -55,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         margin: '10px',
         padding: '10px',
         width: '35px',
-        backgroundColor: '#392396',
+        backgroundColor: '#4050B5',
         color: '#fff',
         border: 'none',
         outline: "none"
@@ -238,10 +230,11 @@ export default function ({labels, logs}) {
                 .append("rect")
                 .attr("x", -CLASS_WIDTH / 2)
                 .attr("y", 0)
+                .attr("rx", 5)
+                .attr("ry", 5)
                 .attr("width", CLASS_WIDTH)
                 .attr("height", CLASS_HEIGHT)
-                .style("fill", "#E4F4F5")
-                .style("stroke", "#888");
+                .style("fill", "#609DA0");
         });
         labels.forEach(function (c, i) {
             var x = XPAD + i * VERT_SPACE + 25;
@@ -252,6 +245,8 @@ export default function ({labels, logs}) {
                 .text(function (d) {
                     return c.name;
                 })
+                .style("fill", "#fff")
+                .style("font-size", 15)
                 .attr("dx", CLASS_LABEL_X_OFFSET)
                 .attr("dy", CLASS_LABEL_Y_OFFSET);
         });
@@ -301,11 +296,6 @@ export default function ({labels, logs}) {
 
     return (
         <div className={classes.root}>
-            <div className={classes.backPanel}>
-                <IconButton onClick={() => {
-                    window.location = '/#/trace-list'
-                }}><ArrowBackIosIcon/></IconButton>
-            </div>
             <div className={classes.svgPanel}>
                 <svg preserveAspectRatio="xMinYMid meet" x="25" y="0" ref={ref} className={classes.svg}
                      viewBox="0 0 1600 1000"/>

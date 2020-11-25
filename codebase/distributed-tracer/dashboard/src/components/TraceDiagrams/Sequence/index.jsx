@@ -6,7 +6,7 @@ import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        display: 'block',
         width: "100%",
         height: "100vh",
     },

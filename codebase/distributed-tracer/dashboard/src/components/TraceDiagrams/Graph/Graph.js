@@ -13,7 +13,7 @@ function Graph({
                }) {
     let simulation;
     const ref = useRef();
-    const classes = useStyles()
+    const classes = useStyles();
     const nodeRadius = 15;
 
     const dragstarted = (e, d) => {
