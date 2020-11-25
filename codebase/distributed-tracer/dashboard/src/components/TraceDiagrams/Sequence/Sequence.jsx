@@ -1,9 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {makeStyles} from "@material-ui/core/styles";
 import * as d3 from "d3";
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import {IconButton} from "@material-ui/core";
-import SearchAppBar from "../../AppBar";
 
 const XPAD = 120;
 const YPAD = 20;
@@ -28,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         width: "100vw",
-        height: "calc(100vh - 40px)",
+        // height: "calc(100vh-200px)",
+        // height: "calc(100vh - 40px)",
         display: 'flex',
         justifyContent: 'space-between'
 
@@ -36,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
     detailsPanel: {
         padding: '20px',
         width: '30%',
-        height: "100%",
-        background: "#fff"
+        background: "#fff",
+        height: "calc(100vh - 104px)"
     },
     buttonContainer: {
         display: "flex",
@@ -59,7 +57,12 @@ const useStyles = makeStyles((theme) => ({
     },
     svgPanel: {
         overflow: 'scroll',
-        width: 'inherit'
+        width: 'inherit',
+        backgroundColor: '#f5f5f5'
+        // height: '100%'
+    },
+    pathOptions: {
+        padding: theme.spacing(1)
     }
 }));
 
@@ -298,7 +301,7 @@ export default function ({labels, logs}) {
         <div className={classes.root}>
             <div className={classes.svgPanel}>
                 <svg preserveAspectRatio="xMinYMid meet" x="25" y="0" ref={ref} className={classes.svg}
-                     viewBox="0 0 1600 1000"/>
+                     viewBox="0 0 1600 500"/>
             </div>
             <div className={classes.detailsPanel}>
                 <div className={classes.buttonContainer}>
@@ -310,16 +313,22 @@ export default function ({labels, logs}) {
                     <button className={classes.button}>&gt;&gt;</button>
                 </div>
                 <br/>
-                {optionList.map((msg, idx) => (
+                {optionList.length > 0 && (
                     <>
-                        <label>
-                            <input type="radio" name={"name"} onClick={e => setSelection(msg)}
-                                   value={msg.authority}/>
-                            {msg.authority}
-                        </label>
-                        <br/>
+                        Select a path:<hr style={{border:'1px solid #eee'}}/>
+                        {optionList.map((msg, idx) => (
+                            <div className={classes.pathOptions}>
+                                <label >
+                                    <input type="radio" name={"name"} onClick={e => setSelection(msg)}
+                                           value={msg.authority}/>
+                                    {msg.authority}
+                                </label>
+                                <br/>
+                            </div>
+                        ))}
                     </>
-                ))}
+                )}
+
                 <br/>
                 <div className={classes.jsonBody}>
                     {/*API: {selectedMessage}*/}
