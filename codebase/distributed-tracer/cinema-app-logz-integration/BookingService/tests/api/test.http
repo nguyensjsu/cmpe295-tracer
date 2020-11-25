@@ -1,0 +1,24 @@
+
+# POST call
+POST http://localhost:8084/book
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Cookie: token=;
+x-unique-spanid: 123456789
+
+{
+  "cinemaId": "1",
+  "movieId": "1",
+  "showTime": "13:00",
+  "seats": "2",
+  "cardNumber": "123467890123",
+  "nameOnCard": "John",
+  "expMonth": "1234",
+  "cvv": "000",
+  "cardType": "visa",
+  "userId": "1",
+  "email": "abc@abc.com"
+}
+
+###

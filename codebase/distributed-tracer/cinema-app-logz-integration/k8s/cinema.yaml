@@ -1,0 +1,60 @@
+##################################################################################################
+# Cinema Service
+##################################################################################################
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cmpe295-cinema-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cmpe295-cinema-service
+  labels:
+    app: cmpe295-cinema-service
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: cmpe295-cinema-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmpe295-cinema-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cmpe295-cinema-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: cmpe295-cinema-service
+        version: v1
+    spec:
+      serviceAccountName: cmpe295-cinema-service
+      containers:
+      - image: gcr.io/distribute-tracing/cinema-service:v1
+        imagePullPolicy: Always
+        name: cmpe295-cinema-service
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: DB_USERNAME
+          value: "admin"
+        - name: DB_PASSWORD
+          value: "cmpe295"
+        - name: DB_HOST
+          value: "mongo"
+        - name: DB_PORT
+          value: "27017"
+        - name: DB_NAME
+          value: "cinema"
+        - name: MOVIES_SERVICE_URL
+          value: "http://cmpe295-movies-service:8080"

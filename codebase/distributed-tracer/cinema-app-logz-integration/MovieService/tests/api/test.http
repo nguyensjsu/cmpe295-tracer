@@ -1,0 +1,8 @@
+# GET call
+GET http://localhost:8080/movies
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Cookie: TOKEN=asasd;
+
+###
