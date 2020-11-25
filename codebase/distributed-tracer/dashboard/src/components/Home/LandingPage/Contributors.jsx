@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-export default function (props) {
+export const Contributors = (props) => {
     const classes = useStyles();
     return (
         <div className={classes.main}>

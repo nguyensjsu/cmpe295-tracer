@@ -1,1 +1,1 @@
-export {default} from './LandingPage.jsx';
+export {LandingPage} from './LandingPage.jsx';

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {makeStyles} from "@material-ui/core/styles";
 import Graph from "./Graph";
-import DetailsPanel from "./DetailsPanel";
+import {DetailsPanel} from "./DetailsPanel";
 import {updateData} from '../../Library'
 import {useParams} from "react-router-dom";
 
@@ -18,22 +18,22 @@ export default function (props) {
     const [logs, setLogs] = useState([]);
     const [nodes, setNodes] = useState([]);
     const [links, setLinks] = useState([]);
-    const {uuid} = useParams()
+    const {uuid} = props.match.params;
 
     useEffect(() => {
         updateData(uuid).then(({nodes, links, logs}) => {
-            setNodes(nodes)
-            setLinks(links)
-            setLogs(logs)
+            setNodes(nodes);
+            setLinks(links);
+            setLogs(logs);
         })
 
     }, [uuid]);
 
-    const [startNode, setStartNode] = useState("n0")
-    const [endNode, setEndNode] = useState("n2")
-    const [paths, setPaths] = useState([])
-    const [highlightedPath, setHighlightedPath] = useState("")
-    const [selectedNode, setSelectedNode] = useState({})
+    const [startNode, setStartNode] = useState("n0");
+    const [endNode, setEndNode] = useState("n2");
+    const [paths, setPaths] = useState([]);
+    const [highlightedPath, setHighlightedPath] = useState("");
+    const [selectedNode, setSelectedNode] = useState({});
     return (
         <div className={classes.root}>
             <Graph

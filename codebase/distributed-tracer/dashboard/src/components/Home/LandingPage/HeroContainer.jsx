@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function (props) {
+export const HeroContainer = (props) => {
     const classes = useStyles();
     return (
         <div className={classes.paper}>

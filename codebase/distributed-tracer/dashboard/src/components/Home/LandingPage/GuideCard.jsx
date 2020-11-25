@@ -26,12 +26,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function (props) {
+export const GuideCard = (props) => {
     const classes = useStyles();
     return (
         <Grid item xs={12} md={6}>
             <Card className={classes.card}>
-
                 <CardHeader
                     avatar={props.avatar}
                     title={<h2>{props.title}</h2>}
@@ -45,10 +44,7 @@ export default function (props) {
                         {props.linkData}
                     </Button>
                 </div>
-
-
             </Card>
         </Grid>
-
     )
 }

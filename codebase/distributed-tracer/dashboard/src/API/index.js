@@ -6,8 +6,8 @@ export const fetchTraceIDs = function () {
         id: id,
         timestamp: new Date()
     })))
-}
+};
 
 export const fetchLogs = (uuid) => {
     return axios.get(`http://${process.env.REACT_APP_SERVER_IP}/traces/${uuid}`).then(res => res.data)
-}
+};

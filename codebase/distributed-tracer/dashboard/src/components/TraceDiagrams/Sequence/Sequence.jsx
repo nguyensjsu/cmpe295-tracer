@@ -213,6 +213,11 @@ export default function ({labels, logs}) {
     }
 
     const drawLabels = () => {
+        let svg = d3.select(ref.current);
+        svg.selectAll('.vertical-line').remove();
+        svg.selectAll('.vertical-line-rect').remove();
+        svg.selectAll('.vertical-line-msg').remove();
+
         labels.forEach(function (c, i) {
             d3.select(ref.current)
                 .append("line")
@@ -229,7 +234,7 @@ export default function ({labels, logs}) {
             d3.select(ref.current)
                 .append("g")
                 .attr("transform", "translate(" + x + "," + YPAD + ")")
-                .attr("class", "first")
+                .attr("class", "first vertical-line-rect")
                 .append("rect")
                 .attr("x", -CLASS_WIDTH / 2)
                 .attr("y", 0)
@@ -242,7 +247,7 @@ export default function ({labels, logs}) {
             var x = XPAD + i * VERT_SPACE + 25;
             d3.select(ref.current).append("g")
                 .attr("transform", "translate(" + x + "," + YPAD + ")")
-                .attr("class", "first")
+                .attr("class", "first vertical-line-msg")
                 .append("text")
                 .text(function (d) {
                     return c.name;

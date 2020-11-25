@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ({selectedNode, logs}) {
+export const DetailsPanel = ({selectedNode, logs}) => {
     const classes = useStyles();
     const [filterLogs, setFilterLogs] = useState([])
     const [microserviceInfo, setMicroserviceInfo] = useState({})
@@ -54,7 +54,8 @@ export default function ({selectedNode, logs}) {
                 <Typography className={classes.pos} color="textSecondary">
                     {/*{JSON.stringify(microserviceInfo)}*/}
                     Method: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.method}<br/>
-                    Start Time: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.start_time}<br/>
+                    Start
+                    Time: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.start_time}<br/>
                     Path: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.path}<br/>
                     Protocol: {microserviceInfo && microserviceInfo.istioLog && microserviceInfo.istioLog.protocol}<br/>
                 </Typography>

@@ -11,7 +11,6 @@ function Graph({
                    highlightedPath,
                    onSelect
                }) {
-
     let simulation;
     const ref = useRef();
     const classes = useStyles()
@@ -21,12 +20,12 @@ function Graph({
         if (!e.active) simulation.alphaTarget(0.3).restart()
         d.fx = d.x;
         d.fy = d.y;
-    }
+    };
 
     const dragged = (e, d) => {
         d.fx = e.x;
         d.fy = e.y;
-    }
+    };
 
     const update = _ => {
         let link = d3.select(ref.current)
@@ -47,11 +46,11 @@ function Graph({
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
-            )
+            );
 
         node.append("circle")
             .attr("r", nodeRadius)
-            .attr("fill", "cadetblue")
+            .attr("fill", "cadetblue");
 
         node.append("title")
             .text(function (d) {
@@ -64,7 +63,7 @@ function Graph({
             .style("font-size", "14px")
             .text(function (d) {
                 return d.label;
-            })
+            });
         node.append("text")
             .attr("r", nodeRadius / 4)
             .attr("y", -20)
@@ -108,7 +107,7 @@ function Graph({
             .force('link', d3.forceLink()
                 .distance(300)
                 .links(links))
-            .on('tick', ticked)
+            .on('tick', ticked);
 
 
         d3.select(ref.current)
@@ -128,7 +127,7 @@ function Graph({
             .style('stroke', 'none');
 
         update()
-    }, [nodes, links])
+    }, [nodes, links]);
 
     return (
         <div className={classes.root}>

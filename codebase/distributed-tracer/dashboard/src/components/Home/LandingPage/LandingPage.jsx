@@ -8,23 +8,10 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import BuildIcon from '@material-ui/icons/Build';
 import Typography from "@material-ui/core/Typography";
 
-import HeroContainer from "./HeroContainer";
-import GuideCard from "./GuideCard";
-import Contributors from "./Contributors";
+import {HeroContainer} from "./HeroContainer";
+import {GuideCard} from "./GuideCard";
+import {Contributors} from "./Contributors";
 import Link from "@material-ui/core/Link";
-
-function Copyright() {
-    return (
-        <Typography variant="body2" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="#">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -41,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
     footer: {
         padding:theme.spacing(6, 0),
-        backgroundColor: '#BDBDBD',
-        color: '#000'
+        backgroundColor: '#000',
+        color: '#bdbdbd'
     }
 }));
 
@@ -50,20 +37,20 @@ const heroContainer = {
     title: "Distributed Tracing of Microservices"
 }
 
-export default function (props) {
+export const LandingPage = (props) => {
     const classes = useStyles();
     const installation = {
         avatar: <ArrowDownwardIcon className={classes.iconColor} fontSize={"large"}/>,
         title: "Installation",
         linkData: 'READ INSTALLATION DOCS',
         link: "#"
-    }
+    };
     const usage = {
         avatar: <BuildIcon className={classes.iconColor} fontSize={"large"}/>,
         title: "Usage",
         linkData: 'READ USAGE DOCS',
         link: "#"
-    }
+    };
     return (
         <>
             <CssBaseline/>
@@ -112,16 +99,13 @@ export default function (props) {
                 <Contributors/>
                 <footer className={classes.footer}>
                         <Typography variant="h6" align="center" gutterBottom>
-                            title
+                            CMPE 295B
                         </Typography>
                         <Typography variant="subtitle1" align="center" component="p">
-                            description
+                            San Jose State University
                         </Typography>
-                        <Copyright />
                 </footer>
             </Container>
-
-
         </>
     )
 }
