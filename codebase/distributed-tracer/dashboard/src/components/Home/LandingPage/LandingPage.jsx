@@ -58,7 +58,7 @@ export const LandingPage = (props) => {
 
                 <HeroContainer title={heroContainer.title}/>
 
-                <div className={classes.guideCardsContainer}>
+                <div className={classes.guideCardsContainer} id='usage-id'>
                     <Grid container spacing={3}>
                         <GuideCard avatar={installation.avatar} title={installation.title} linkData = {installation.linkData} link = {installation.link} >
                             <Typography variant="body1" gutterBottom>

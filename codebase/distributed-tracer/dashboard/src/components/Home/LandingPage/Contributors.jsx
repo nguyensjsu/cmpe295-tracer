@@ -2,18 +2,22 @@ import React from "react";
 
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 
 const useStyles = makeStyles((theme) => ({
     main: {
-        backgroundColor: '#E4F5F5',
-        padding: theme.spacing(10, 5),
+        padding: theme.spacing(7, 7),
+    },
+    cardsRoot: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        marginTop: '25px'
     },
     card: {
-        width: '300px'
+        width: '270px',
     },
     alignRight: {
         display: 'flex',
@@ -24,10 +28,19 @@ const useStyles = makeStyles((theme) => ({
     },
     guideMain: {
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginBottom: theme.spacing(5)
+    },
+    cardHeader: {
+        padding: '30px'
+    },
+    avatar: {
+        width:'35px',
+        height:'35px',
+        backgroundColor: '#323480'
     }
 
-}))
+}));
 
 export const Contributors = (props) => {
     const classes = useStyles();
@@ -36,59 +49,53 @@ export const Contributors = (props) => {
             <Typography align={"center"} component="h1" variant="h3" gutterBottom>
                 Contributors
             </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6} className={classes.alignRight}>
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="devanshi" className={classes.avatar}>
-                                    B
-                                </Avatar>
-                            }
-                            title="Busi Pallavi Reddy"
-                        />
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="devanshi" className={classes.avatar}>
-                                    D
-                                </Avatar>
-                            }
-                            title="Devanshi Trivedi"
-                        />
-                    </Card>
-                </Grid>
+            <div className={classes.cardsRoot}>
+                <Card className={classes.card}>
+                    <CardHeader
+                        style={{padding: '5px'}}
+                        avatar={
+                            <Avatar aria-label="pallavi" className={classes.avatar}>
+                                B
+                            </Avatar>
+                        }
+                        title="Busi Pallavi Reddy"
+                    />
+                </Card>
+                <Card className={classes.card}>
+                    <CardHeader
+                        style={{padding: '5px'}}
+                        avatar={
+                            <Avatar aria-label="prachi" className={classes.avatar}>
+                                P
+                            </Avatar>
+                        }
+                        title="Prachi Chouksey"
+                    />
+                </Card>
+                <Card className={classes.card}>
+                    <CardHeader
+                        style={{padding: '5px'}}
+                        avatar={
+                            <Avatar aria-label="maunil" className={classes.avatar}>
+                                M
+                            </Avatar>
+                        }
+                        title="Maunil Swadas"
+                    />
+                </Card>
 
-                <Grid item xs={12} md={6} className={classes.alignRight}>
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="devanshi" className={classes.avatar}>
-                                    M
-                                </Avatar>
-                            }
-                            title="Maunil Swadas"
-                        />
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="devanshi" className={classes.avatar}>
-                                    P
-                                </Avatar>
-                            }
-                            title="Prachi Chouksey"
-                        />
-                    </Card>
-
-                </Grid>
-            </Grid>
-
+                <Card className={classes.card}>
+                    <CardHeader
+                        style={{padding: '5px'}}
+                        avatar={
+                            <Avatar aria-label="devanshi" className={classes.avatar}>
+                                D
+                            </Avatar>
+                        }
+                        title="Devanshi Trivedi"
+                    />
+                </Card>
+            </div>
 
             <Typography className={classes.guide} component="h1" variant="h3" gutterBottom align={"center"}>
                 Guide
@@ -96,8 +103,9 @@ export const Contributors = (props) => {
             <div className={classes.guideMain}>
                 <Card className={classes.card}>
                     <CardHeader
+                        style={{padding: '5px'}}
                         avatar={
-                            <Avatar aria-label="devanshi" className={classes.avatar}>
+                            <Avatar aria-label="paul" className={classes.avatar}>
                                 P
                             </Avatar>
                         }
