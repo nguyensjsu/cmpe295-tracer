@@ -208,6 +208,7 @@ export default function ({labels, logs}) {
                 type: "REQUEST"
             }])
             setOptionList([])
+            setSelection(null)
         }
     }
 
@@ -297,7 +298,7 @@ export default function ({labels, logs}) {
         <div className={classes.root}>
             <div className={classes.backPanel}>
                 <IconButton onClick={() => {
-                    window.location = '/tracegraph'
+                    window.location = '/#/trace-list'
                 }}><ArrowBackIosIcon/></IconButton>
             </div>
             <div className={classes.svgPanel}>

@@ -6,6 +6,12 @@ export async function updateData(uuid) {
     await fetchLogs(uuid)
         .then(data => logs = data)
     nodes = getNodes(logs)
+    let emptyIndex = logs.findIndex(l => l.parentSpanId === "EMPTY" && l.spanId.split("|")[0] === "EMPTY")
+    if (emptyIndex > 0) {
+        let spanId = logs[emptyIndex].spanId.split("|")
+        spanId[2] = 0
+        logs[emptyIndex].spanId = spanId.join("|")
+    }
     return {
         nodes: nodes.map(n => ({name: n, label: n, ip: "0.0.0.0"})),
         links: getLinks(logs, nodes),
@@ -14,7 +20,8 @@ export async function updateData(uuid) {
 }
 
 const getNodes = (logs) => {
-    return [...new Set(logs.map(l => l.appName))]
+    let sortedLogs = logs.filter(log => log.log_source === "envoy" && log.log_type === "REQUEST").sort((a, b) => a.spanId.split('|')[2] - b.spanId.split('|')[2])
+    return [...new Set(sortedLogs.map(l => l.appName))]
 }
 
 const getLinks = (logs, nodes) => {
