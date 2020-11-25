@@ -42,4 +42,10 @@ public class KafkaController {
 
         return traceService.getAllUniqueTraces();
     }
+
+    @RequestMapping(value = "/traces/info",method = RequestMethod.GET)
+    public List<TracePrototype> getTracesInfo() {
+
+        return traceService.getAllTracesInfo();
+    }
 }

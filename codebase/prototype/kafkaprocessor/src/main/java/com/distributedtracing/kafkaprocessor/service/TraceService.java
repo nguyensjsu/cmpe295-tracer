@@ -32,4 +32,10 @@ public class TraceService {
         return traceId;
 
     }
+
+    public List<TracePrototype> getAllTracesInfo(){
+        String regExPattern = "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\:[0-9]{2,4}$";
+        List<TracePrototype> tracesInfo = tracePrototypeRepository.findTracePrototypesByAuthorityMatchesRegex(regExPattern);
+        return tracesInfo;
+    }
 }

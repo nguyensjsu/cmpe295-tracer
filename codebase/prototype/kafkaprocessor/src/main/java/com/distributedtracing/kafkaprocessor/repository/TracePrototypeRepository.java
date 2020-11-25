@@ -13,8 +13,7 @@ public interface TracePrototypeRepository extends MongoRepository<TracePrototype
     //@Query("{'requestId' : '?0'}")
     List<TracePrototype> findAllByRequestId(String requestId);
 
-//    @Query("{ distinct : 'traceLog', key : 'request_id'}")
-//    List<String> findDistinctTraceIds();
+    List<TracePrototype> findTracePrototypesByAuthorityMatchesRegex(String regEx);
 
 }
 
