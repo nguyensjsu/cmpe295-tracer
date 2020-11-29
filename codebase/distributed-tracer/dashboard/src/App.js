@@ -6,6 +6,7 @@ import TraceList from "./components/TraceList/index";
 import SequenceDiagram from "./components/TraceDiagrams/Sequence/index";
 
 import {HashRouter as Router, Switch, Route} from 'react-router-dom';
+import Logs from "./components/TraceDiagrams/Logs";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path='/trace-list' component={TraceList}/>
                 <Route path='/trace-graph/:uuid' component={TraceGraph}/>
                 <Route path='/sequence-diagram/:uuid' component={SequenceDiagram}/>
+                <Route path='/trace-logs/:uuid' component={Logs}/>
             </Switch>
         </Router>
     );

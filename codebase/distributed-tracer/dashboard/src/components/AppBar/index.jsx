@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         flexGrow: 1,
+        cursor:"pointer",
         display: 'none',
         [theme.breakpoints.up('sm')]: {
             display: 'block',
@@ -51,16 +52,8 @@ const useStyles = makeStyles((theme) => ({
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 1),
-        // vertical padding + font size from searchIcon
-        // paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
-        // [theme.breakpoints.up('sm')]: {
-        //     width: '20ch',
-        //     '&:focus': {
-        //         width: '20ch',
-        //     },
-        // },
     },
 }));
 
@@ -75,7 +68,7 @@ export default function SearchAppBar() {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography className={classes.title} variant="h6" noWrap>
+                    <Typography onClick={_ => window.location = "/#/"} className={classes.title} variant="h6" noWrap>
                         Distributed Tracing of Microservices
                     </Typography>
                     <form onSubmit={handleSubmit}>

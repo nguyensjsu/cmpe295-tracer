@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
         background: 'none',
         color: '#eee',
         fontSize: '20px'
-    }
+    },
 }));
 
 const heroContainer = {
@@ -73,52 +73,66 @@ export const LandingPage = (props) => {
 
                 <HeroContainer title={heroContainer.title}/>
 
-                <div className={classes.guideCardsContainer} id='usage-id'>
-                    <Grid container spacing={3}>
-                        <GuideCard avatar={installation.avatar} title={installation.title}
-                                   linkData={installation.linkData} link={installation.link}>
-                            <Typography variant="body1" gutterBottom>
-                                This is the installation guide<br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                            </Typography>
-                        </GuideCard>
+                {/*<div className={classes.guideCardsContainer} id='usage-id'>*/}
+                {/*    <Grid container spacing={3}>*/}
+                {/*        <GuideCard avatar={installation.avatar} title={installation.title}*/}
+                {/*                   linkData={installation.linkData} link={installation.link}>*/}
+                {/*            <Typography variant="body1" gutterBottom>*/}
+                {/*                This is the installation guide<br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*            </Typography>*/}
+                {/*        </GuideCard>*/}
 
-                        <GuideCard avatar={usage.avatar} title={usage.title} linkData={usage.linkData}
-                                   link={usage.link}>
-                            <Typography variant="body1" gutterBottom>
-                                This is the usage guide<br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                            </Typography>
-                        </GuideCard>
+                {/*        <GuideCard avatar={usage.avatar} title={usage.title} linkData={usage.linkData}*/}
+                {/*                   link={usage.link}>*/}
+                {/*            <Typography variant="body1" gutterBottom>*/}
+                {/*                This is the usage guide<br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*                <br/>*/}
+                {/*            </Typography>*/}
+                {/*        </GuideCard>*/}
 
-                    </Grid>
-                </div>
+                {/*    </Grid>*/}
+                {/*</div>*/}
 
                 {/*<Contributors/>*/}
                 <footer className={classes.footer}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} sm={6} >
-                            <Paper className={classes.footerTitle} style={{textAlign: 'right'}}>CMPE 295B</Paper>
-                            <Paper className={classes.footerTitle} style={{textAlign: 'right'}}>San Jose State University</Paper>
+                    <Grid container spacing={0}>
+                        <Grid item xs={12} sm={6}>
+                            <Grid container spacing={0}>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes.paper} style={{textAlign: 'right',fontSize:25}}>San Jose State
+                                        University</Paper>
+                                </Grid>
+                                <Grid item xs={3} sm={6}>
+                                    <Paper className={classes.paper} style={{textAlign: 'left',paddingTop:15}}>
+                                        CMPE 295<br/>
+                                        Major Project<br/>
+                                        Development
+                                    </Paper>
+                                </Grid>
+                                {/*<Paper className={classes.footerTitle} style={{textAlign: 'right'}}>CMPE 295B</Paper>*/}
+                                {/*<Paper className={classes.footerTitle} style={{textAlign: 'right'}}>San Jose State*/}
+                                {/*    University</Paper>*/}
+                            </Grid>
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Grid container spacing={1}>

@@ -13,7 +13,7 @@ export async function updateData(uuid) {
         logs[emptyIndex].spanId = spanId.join("|")
     }
     return {
-        nodes: nodes.map(n => ({name: n, label: n, ip: "0.0.0.0"})),
+        nodes: nodes.map(n => ({name: n, label: n, ip: ""})),
         links: getLinks(logs, nodes),
         logs: newLogs(logs, nodes)
     }

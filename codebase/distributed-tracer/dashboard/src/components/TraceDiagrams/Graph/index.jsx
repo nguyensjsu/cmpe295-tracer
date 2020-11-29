@@ -4,6 +4,7 @@ import Graph from "./Graph";
 import {DetailsPanel} from "./DetailsPanel";
 import {updateData} from '../../Library'
 import SearchAppBar from "../../AppBar";
+import NavTabs from "../../NavTabs";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -12,6 +13,12 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         height: "calc(100vh - 64px)",
     },
+    graphContainer: {
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%"
+    }
 }));
 
 export default function (props) {
@@ -39,14 +46,17 @@ export default function (props) {
         <div className={classes.container}>
             <SearchAppBar/>
             <div className={classes.root}>
-                <Graph
-                    onSelect={setSelectedNode}
-                    nodes={nodes} links={links}
-                    startNode={startNode} setStartNode={setStartNode}
-                    endNode={endNode} setEndNode={setEndNode}
-                    paths={paths} setPaths={setPaths}
-                    highlightedPath={highlightedPath}
-                />
+                <div className={classes.graphContainer}>
+                    <NavTabs requestId={uuid}/>
+                    <Graph
+                        onSelect={setSelectedNode}
+                        nodes={nodes} links={links}
+                        startNode={startNode} setStartNode={setStartNode}
+                        endNode={endNode} setEndNode={setEndNode}
+                        paths={paths} setPaths={setPaths}
+                        highlightedPath={highlightedPath}
+                    />
+                </div>
                 <DetailsPanel
                     logs={logs}
                     selectedNode={selectedNode}

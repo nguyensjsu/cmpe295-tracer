@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 export const fetchTraceIDs = function () {
-    return axios.get(`http://${process.env.REACT_APP_SERVER_IP}/traces`).then(res => res.data.map(id => ({
-        url: "METHOD /path",
-        id: id,
-        timestamp: new Date()
+    return axios.get(`http://${process.env.REACT_APP_SERVER_IP}/traces/info`).then(res => res.data.map(log => ({
+        url: `${log.method} ${log.path}`,
+        id: log.request_id,
+        timestamp: log.start_time
     })))
 };
 

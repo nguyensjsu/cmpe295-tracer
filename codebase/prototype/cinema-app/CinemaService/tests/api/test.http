@@ -1,10 +1,9 @@
 # GET call
-GET http://localhost:8082/cinema/1/1
+GET http://34.94.67.193:80/cinema/1/1
 Accept: */*
 Cache-Control: no-cache
 Content-Type: application/json
 Cookie: TOKEN=asasd;
-x-response-time:1
 
 ###
 

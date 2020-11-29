@@ -1,11 +1,10 @@
 
 # POST call
-POST http://localhost:8084/book
+POST http://34.94.1.56:80/book
 Accept: */*
 Cache-Control: no-cache
 Content-Type: application/json
 Cookie: token=;
-x-unique-spanid: 123456789
 
 {
   "cinemaId": "1",
@@ -16,7 +15,7 @@ x-unique-spanid: 123456789
   "nameOnCard": "John",
   "expMonth": "1234",
   "cvv": "000",
-  "cardType": "visa",
+  "cardType": "discover",
   "userId": "1",
   "email": "abc@abc.com"
 }

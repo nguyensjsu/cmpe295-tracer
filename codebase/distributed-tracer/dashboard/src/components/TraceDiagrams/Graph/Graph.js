@@ -3,7 +3,10 @@ import * as d3 from "d3";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-    root: {width: "100%"}
+    root: {
+        width: "100%",
+        height: "100%"
+    }
 }));
 
 function Graph({
@@ -59,18 +62,18 @@ function Graph({
 
         node.append("text")
             .attr("r", nodeRadius / 4)
-            .attr("y", -35)
+            .attr("y", -22)
             .style("font-size", "14px")
             .text(function (d) {
                 return d.label;
             });
-        node.append("text")
-            .attr("r", nodeRadius / 4)
-            .attr("y", -20)
-            .style("font-size", "12px")
-            .text(function (d) {
-                return d.ip;
-            });
+        // node.append("text")
+        //     .attr("r", nodeRadius / 4)
+        //     .attr("y", -20)
+        //     .style("font-size", "12px")
+        //     .text(function (d) {
+        //         return d.ip;
+        //     });
         node.on("click", (e, d) => {
             onSelect(d);
         })

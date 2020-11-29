@@ -1,6 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {makeStyles} from "@material-ui/core/styles";
 import * as d3 from "d3";
+import NavTabs from "../../NavTabs";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import FormControl from "@material-ui/core/FormControl";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
 
 const XPAD = 120;
 const YPAD = 20;
@@ -16,30 +23,23 @@ const MESSAGE_LABEL_Y_OFFSET = 70;
 const MESSAGE_ARROW_Y_OFFSET = 80;
 
 const useStyles = makeStyles((theme) => ({
-
-    svg: {
-        padding: '10px',
-        paddingLeft: '20px',
-        overflow: 'visible',
-        width: 'inherit',
-    },
     root: {
-        width: "100vw",
-        // height: "calc(100vh-200px)",
-        // height: "calc(100vh - 40px)",
+        // width: "100vw",
         display: 'flex',
         justifyContent: 'space-between'
-
     },
     detailsPanel: {
         padding: '20px',
-        width: '30%',
+        width: 'calc(30% - 40px)',
         background: "#fff",
         height: "calc(100vh - 104px)"
     },
     buttonContainer: {
         display: "flex",
-        justifyContent: "center"
+        justifyContent: "center",
+        "& button": {
+            width: 70
+        }
     },
     button: {
         margin: '10px',
@@ -50,23 +50,29 @@ const useStyles = makeStyles((theme) => ({
         border: 'none',
         outline: "none"
     },
-    jsonBody: {
-        height: "80%",
-        overflowY: "scroll",
-        lineHeight: '2'
-    },
-    svgPanel: {
-        overflow: 'scroll',
-        width: 'inherit',
-        backgroundColor: '#f5f5f5'
-        // height: '100%'
+    messageBody: {
+        wordWrap: "break-word"
     },
     pathOptions: {
         padding: theme.spacing(1)
+    },
+    svgContainer: {
+        width: "70%",
+        height: "calc(100vh - 158px)",
+        backgroundColor: '#f5f5f5'
+    },
+    svgPanel: {
+        overflow: "auto",
+        width: '100%',
+    },
+    svg: {
+        padding: '10px',
+        overflow: 'visible',
+        width: 1620,
     }
 }));
 
-export default function ({labels, logs}) {
+export default function ({labels, logs, uuid}) {
     const classes = useStyles();
     const ref = useRef();
 
@@ -74,6 +80,7 @@ export default function ({labels, logs}) {
     const [optionList, setOptionList] = useState([]);
     const [selection, setSelection] = useState(null)
     const [appLogs, setAppLogs] = useState({});
+    const [messageBody, setMessageBody] = useState("")
 
     useEffect(() => {
         let logsForLabel = {}
@@ -82,7 +89,6 @@ export default function ({labels, logs}) {
             tempLogs.sort((a, b) => a.spanId.split("|")[2] - b.spanId.split("|")[2])
             logsForLabel[label.name] = tempLogs
         })
-        console.log(logsForLabel)
         setAppLogs(logsForLabel)
     }, [logs]);
 
@@ -132,6 +138,7 @@ export default function ({labels, logs}) {
                 end: logs[0].appName,
                 message: logs[0].method + ' ' + logs[0].path,
                 time: 0,
+                body: logs[0].body,
                 uniqueId: logs[0].spanId.split("|")[1],
                 type: "REQUEST"
             }])
@@ -152,6 +159,7 @@ export default function ({labels, logs}) {
                             end: !!destination ? destination.appName : "User",
                             message: requestInMessages.message,
                             time: !!destination ? Math.max(Number(destination.spanId.split("|")[2]), Number(currentAppLog.spanId.split("|")[2])) : Number(currentAppLog.spanId.split("|")[2]),
+                            body: currentAppLog.body,
                             uniqueId: currentAppLog.spanId.split("|")[1],
                             type: "RESPONSE"
                         }])
@@ -176,6 +184,7 @@ export default function ({labels, logs}) {
                                 end: currentAppLog.authority.split(":")[0],
                                 message: currentAppLog.method + ' ' + currentAppLog.path,
                                 time: currentAppLog.spanId.split("|")[2],
+                                body: currentAppLog.body,
                                 uniqueId: currentAppLog.spanId.split("|")[1],
                                 type: "REQUEST"
                             }])
@@ -188,6 +197,8 @@ export default function ({labels, logs}) {
     }
 
     const prev = _ => {
+        setOptionList([])
+        setSelection(null)
         setMessages(messages.slice(0, messages.length - 1))
     }
 
@@ -294,46 +305,47 @@ export default function ({labels, logs}) {
                 .text(function (d) {
                     return m.message;
                 })
+                .on("click", _ => setMessageBody(m.body))
         });
     }
 
     return (
         <div className={classes.root}>
-            <div className={classes.svgPanel}>
-                <svg preserveAspectRatio="xMinYMid meet" x="25" y="0" ref={ref} className={classes.svg}
-                     viewBox="0 0 1600 500"/>
+            <div className={classes.svgContainer}>
+                <NavTabs requestId={uuid}/>
+                <div className={classes.svgPanel}>
+                    <svg preserveAspectRatio="xMinYMid meet" x="25" y="0" ref={ref} className={classes.svg}
+                         viewBox="0 0 1700 800"/>
+                </div>
             </div>
             <div className={classes.detailsPanel}>
-                <div className={classes.buttonContainer}>
-                    <button className={classes.button}>&lt;&lt;</button>
-                    <button onClick={prev} className={classes.button}> &lt; </button>
-
-                    <button onClick={optionList.length === 0 ? next : selectOption}
-                            className={classes.button}>&gt;</button>
-                    <button className={classes.button}>&gt;&gt;</button>
-                </div>
-                <br/>
+                <ButtonGroup className={classes.buttonContainer} variant="outlined" color="primary"
+                             aria-label="text primary button group">
+                    <Button onClick={_ => {
+                        prev();
+                        setMessages([]);
+                    }}>&lt;&lt;</Button>
+                    <Button onClick={prev}>&lt;</Button>
+                    <Button onClick={optionList.length === 0 ? next : selectOption}>&gt;</Button>
+                    <Button onClick={_ => null}>&gt;&gt;</Button>
+                </ButtonGroup>
+                <div className={classes.messageBody}>{messageBody}</div>
                 {optionList.length > 0 && (
                     <>
-                        Select a path:<hr style={{border:'1px solid #eee'}}/>
-                        {optionList.map((msg, idx) => (
-                            <div className={classes.pathOptions}>
-                                <label >
-                                    <input type="radio" name={"name"} onClick={e => setSelection(msg)}
-                                           value={msg.authority}/>
-                                    {msg.authority}
-                                </label>
-                                <br/>
-                            </div>
-                        ))}
+                        Select a path:
+                        <hr style={{border: '1px solid #eee'}}/>
+                        <FormControl component="fieldset">
+                            <RadioGroup aria-label="gender" name="path">
+                                {optionList.map((msg, idx) =>
+                                    <FormControlLabel
+                                        value={msg.authority}
+                                        control={<Radio onClick={e => setSelection(msg)}/>}
+                                        label={msg.authority}/>
+                                )}
+                            </RadioGroup>
+                        </FormControl>
                     </>
                 )}
-
-                <br/>
-                <div className={classes.jsonBody}>
-                    {/*API: {selectedMessage}*/}
-                    {/*<ReactJson enableClipboard={false} src={selectedBody}/>*/}
-                </div>
             </div>
         </div>
     );
